@@ -1,2 +1,5 @@
+echo "Building docker container for OpenRDF enviroment"
 docker build -t opensesame .
-docker run -ti -p 8080:8080 -v data:/data --rm=true --name my_opensesame opensesame
+
+echo "Starting OpenRDF"
+docker run -ti -p 8081:8080 -v ${PWD}/data:/data --rm=true --name my_opensesame opensesame

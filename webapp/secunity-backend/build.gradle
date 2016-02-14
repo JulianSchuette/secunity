@@ -32,6 +32,9 @@ dependencies {
     
 	//OpenRDF Sesame
   	compile 'org.openrdf.sesame:sesame-repository-http:4.1.0'
+  	compile 'org.openrdf.sesame:sesame-repository-manager:4.1.0'
+  	compile 'org.openrdf.sesame:sesame-repository-sparql:4.1.0'
+  	compile 'org.openrdf.sesame:sesame-repository-api:4.1.0'
     
     //JUnit tests
     testCompile group: 'junit', name: 'junit', version: '4.+'
