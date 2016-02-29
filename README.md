@@ -5,6 +5,6 @@ In the first place it includes information about relevant security research inst
 
 The web application consists of several parts:
 
-''TripleStore'': A triplestore database stores data in RDF format
+__TripleStore__: A triplestore database stores data in RDF format
 ''Backend'': A REST API backend provides CRUD operations on the triplestore. Users are authenticated via OAuth2.0/OpenID Connect tokens
 ''Frontend'': The frontend is a HTML/JS application which operates against the REST API and provides forms to users to enter data for CRUD operations. In a later step, the frontend will provide various advanced ways to search and browse through data in the backend.
