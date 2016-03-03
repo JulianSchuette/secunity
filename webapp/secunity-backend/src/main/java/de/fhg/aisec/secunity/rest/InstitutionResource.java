@@ -1,7 +1,5 @@
 package de.fhg.aisec.secunity.rest;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -13,12 +11,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.openrdf.model.IRI;
+import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
+import org.openrdf.model.Value;
 import org.openrdf.repository.RepositoryResult;
 
 import de.fhg.aisec.secunity.beans.Institution;
 import de.fhg.aisec.secunity.db.TripleStore;
-import info.aduna.iteration.Iterations;
 
 @Path("institution")
 public class InstitutionResource {
@@ -27,11 +27,6 @@ public class InstitutionResource {
 	public void InstitutionResource() {
 		System.out.println("Constructor of bean " + this.toString());
 		db = TripleStore.getInstance();
-		try {
-			db.connect(new URL("http://localhost:8081/openrdf-sesame"), "secunity");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
 	}
 
     @GET
@@ -40,20 +35,41 @@ public class InstitutionResource {
 	public Institution getInstitution(@PathParam("institution") String institution) {
 		//TODO get all attributes of an institution from triple store
     	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(institution, null, null, true);
-    	System.out.println(Iterations.asList(res).toString()); //TODO !
+    	while (res.hasNext()) {
+    		Statement stmt = res.next();
+    		Resource s = stmt.getSubject();
+    		IRI p = stmt.getPredicate();
+    		Value o = stmt.getObject();
+    		
+    		//TODO convert RDF to JSON
+    	}
+    	//Response.ok().entity()
     	return null;
 	}
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
 	public Response createInstitution(Map<String, String> data) {
-    	//TODO check if key "id" is there
+    	// Check if key "name" is there. If not --> BAD REQUEST
+    	if (!data.containsKey("name") || data.get("name")==null) {
+    		return Response.status(Response.Status.BAD_REQUEST).entity("name missing").build();
+    	}
     	
-    	//TODO check if there is already an institution with that "name" in db. If true, return error:
-    	//Response.status(Response.Status.CONFLICT).entity("name already exist");
+    	// Check if there is already an institution with that "name" in db. If true, return error:
+    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(data.get("name"), null, null, false);
+    	if (results.hasNext()) {
+    		Response.status(Response.Status.CONFLICT).entity("name already exist");
+    	}
     	
-    	//TODO Otherwise, create an institution with that name and create triples of the form
+    	//Otherwise, create an institution with that name and create triples of the form
     	// <institution> <key> <value>
+    	TripleStore.getInstance().addTriple(data.get("name"), "rdf:a", "Institution", false);
+    	for (String predicate:data.keySet()) {
+    		if (!predicate.equals("name")) {
+    			String object = data.get(predicate);
+    			TripleStore.getInstance().addTriple(data.get("name"), predicate, object, false);
+    		}
+    	}
     	
     	// Return ok
     	return Response.ok().build();

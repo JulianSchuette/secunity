@@ -1,6 +1,7 @@
 package de.fhg.aisec.secunity.db;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
@@ -35,6 +36,12 @@ public class TripleStore {
 	public static TripleStore getInstance() {
 		if (instance == null) {
 			instance = new TripleStore();
+			try {
+				//TODO make URL and dbID configurable
+				instance.connect(new URL("http://localhost:8081/openrdf-sesame"), "secunity");
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
 		}
 		return instance;
 	}
@@ -168,5 +175,23 @@ public class TripleStore {
 		Statement stmt = f.createStatement(s, p, o);
 		repo.getConnection().add(stmt);
 	}
-	
+
+	/**
+	 * Deletes all content from the database. This method is only for testing purposes. It will throw a RuntimeException if not called from a JUnit test.
+	 * @param confirmation
+	 */
+	public void deleteAll() {
+		boolean isTesting = false;
+		for (StackTraceElement se: new Exception().getStackTrace()) {
+			if (se.getClassName().startsWith("org.junit")) {
+				isTesting = true;
+			}
+		}
+		if (!isTesting) {
+			throw new RuntimeException("Rejected attempt to delete database outside of JUnit test!");
+		}
+		
+		repo.getConnection().clear();	
+	}
+		
 }
