@@ -10,6 +10,7 @@ import org.openrdf.model.Literal;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.SimpleIRI;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
@@ -21,6 +22,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.inferencer.fc.config.DirectTypeHierarchyInferencerConfig;
 import org.openrdf.sail.memory.config.MemoryStoreConfig;
+
+import info.aduna.iteration.Iterations;
 
 /**
  * Facade for triple store backend.
@@ -64,6 +67,8 @@ public class TripleStore {
 	    //Connect to repo.
 		repo = new HTTPRepository(url.toString(), repoID);
 		repo.initialize();
+		repo.getConnection().setNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		repo.getConnection().setNamespace("su", NAMESPACE);
 			
 		return repo;
 	}
@@ -93,7 +98,7 @@ public class TripleStore {
 	    memConf.setPersist(true);
 	    cType.setDelegate(memConf);
 	    epConfig.setSailImplConfig(cType);
-	    config.setRepositoryImplConfig(epConfig);	    
+	    config.setRepositoryImplConfig(epConfig);
 	    
 	    // Give it a title and set it up.
 	    config.setTitle("Secunity repo");
@@ -113,6 +118,10 @@ public class TripleStore {
 		repo.getConnection().add(url, url.toString(), RDFFormat.RDFXML);
 	}
 	
+	public IRI toEntity(String literal) {
+		ValueFactory f = repo.getValueFactory();
+		return f.createIRI(NAMESPACE, literal);
+	}
 	
 	/**
 	 * Get triples from store which match given subject, predicate, object.
@@ -134,6 +143,40 @@ public class TripleStore {
 		return repo.getConnection().getStatements(s, p, o, includeInferred);
 	}
 	
+	public RepositoryResult<Statement> getTriples(String subject, IRI predicate, String object, boolean includeInferred) {
+		ValueFactory f = repo.getValueFactory();
+		IRI s = subject!=null?f.createIRI(NAMESPACE, subject):null;
+		Value o = object!=null?f.createLiteral(object):null;
+		return repo.getConnection().getStatements(s, predicate, o, includeInferred);
+	}
+		
+	public RepositoryResult<Statement> getTriples(String subject, IRI predicate, IRI object, boolean includeInferred) {
+		ValueFactory f = repo.getValueFactory();
+		IRI s = subject!=null?f.createIRI(NAMESPACE, subject):null;
+		return repo.getConnection().getStatements(s, predicate, object, includeInferred);
+	}
+	
+	public void addTriple(String subject, IRI predicate, IRI object, boolean isLiteral) {
+		ValueFactory f = repo.getValueFactory();
+		IRI s = f.createIRI(NAMESPACE, subject);
+		Statement stmt = f.createStatement(s, predicate, object);
+		repo.getConnection().add(stmt);
+	}
+
+	public void addTriple(String subject, IRI predicate, String object, boolean isLiteral) {
+		ValueFactory f = repo.getValueFactory();
+		IRI s = f.createIRI(NAMESPACE, subject);
+		Statement stmt;
+		if (isLiteral) {
+			Literal o = f.createLiteral(object);
+			stmt = f.createStatement(s, predicate, o);
+		} else {
+			IRI o = f.createIRI(NAMESPACE, object);
+			stmt = f.createStatement(s, predicate, o);
+		}
+		repo.getConnection().add(stmt);
+	}
+
 	public void addTriple(String subject, String predicate, String object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
 		IRI s = f.createIRI(NAMESPACE, subject);
@@ -180,7 +223,7 @@ public class TripleStore {
 	 * Deletes all content from the database. This method is only for testing purposes. It will throw a RuntimeException if not called from a JUnit test.
 	 * @param confirmation
 	 */
-	public void deleteAll() {
+	public void deleteAll(boolean deleteNamespaces) {
 		boolean isTesting = false;
 		for (StackTraceElement se: new Exception().getStackTrace()) {
 			if (se.getClassName().startsWith("org.junit")) {
@@ -191,7 +234,12 @@ public class TripleStore {
 			throw new RuntimeException("Rejected attempt to delete database outside of JUnit test!");
 		}
 		
+		// Delete statements
 		repo.getConnection().clear();	
+		
+		// Delete namespaces
+		if (deleteNamespaces)
+			Iterations.asList(repo.getConnection().getNamespaces()).forEach(x -> repo.getConnection().removeNamespace(x.getPrefix()));
 	}
 		
 }

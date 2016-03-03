@@ -27,7 +27,7 @@ public class BackendTest extends JerseyTest {
 	    public void cleanDB() {   	
 	    	// Clear database
 	    	System.out.println("Cleaning database");
-	    	TripleStore.getInstance().deleteAll();
+	    	TripleStore.getInstance().deleteAll(true);
 	    }
 	    
 	    @Test

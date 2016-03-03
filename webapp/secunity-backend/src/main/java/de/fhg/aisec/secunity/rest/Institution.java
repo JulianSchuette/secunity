@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import org.openrdf.model.IRI;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
+import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.RepositoryResult;
 
 import de.fhg.aisec.secunity.db.TripleStore;
@@ -29,7 +30,7 @@ public class Institution {
 		HashMap<String, String> data = new HashMap<String, String>();
 
 		//get all attributes of an institution from triple store
-    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(institution, null, null, true);
+    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(institution, (String) null, (String) null, true);
     	while (res.hasNext()) {
     		Statement stmt = res.next();
     		IRI p = stmt.getPredicate();
@@ -45,14 +46,14 @@ public class Institution {
     @Consumes(MediaType.APPLICATION_JSON)
 	public Response createInstitution(@PathParam("institution") String institution, Map<String, String> data) {
     	// Check if there is already an institution with that name in db. If true, return error:
-    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, null, null, false);
+    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Institution"), false);
     	if (results.hasNext()) {
-    		Response.status(Response.Status.CONFLICT).entity("name already exist");
+    		return Response.status(Response.Status.CONFLICT).entity("institution already exist").build();
     	}
     	
     	//Otherwise, create an institution with that name and create triples of the form
     	// <institution> <key> <value>
-    	TripleStore.getInstance().addTriple(institution, "rdf:a", "Institution", false);
+    	TripleStore.getInstance().addTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Institution"), false);
     	for (String predicate:data.keySet()) {
 			String object = data.get(predicate);
 			TripleStore.getInstance().addTriple(institution, predicate, object, false);
