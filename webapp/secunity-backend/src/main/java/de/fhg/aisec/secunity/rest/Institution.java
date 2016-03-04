@@ -13,6 +13,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.server.JSONP;
 import org.openrdf.model.IRI;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
@@ -25,10 +26,9 @@ import de.fhg.aisec.secunity.db.TripleStore;
 public class Institution {
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces("application/json; charset=UTF-8")
 	public Response getInstitution(@PathParam("institution") String institution) {
 		HashMap<String, String> data = new HashMap<String, String>();
-
 		//get all attributes of an institution from triple store
     	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(institution, (String) null, (String) null, true);
     	while (res.hasNext()) {

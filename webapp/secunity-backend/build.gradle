@@ -6,6 +6,7 @@ version = '1.0'
 
 // War file name
 war.baseName = 'secunity-backend'
+webAppDirName = 'src/webapp'
 	
 jar {
     manifest {
@@ -29,7 +30,7 @@ dependencies {
     compile 'org.glassfish.jersey.core:jersey-server:2.22.1'
     compile 'org.glassfish.jersey.containers:jersey-container-servlet:2.22.1'
 	compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.22.1'
-    
+    	
 	//OpenRDF Sesame
   	compile 'org.openrdf.sesame:sesame-repository-http:4.1.0'
   	compile 'org.openrdf.sesame:sesame-repository-manager:4.1.0'
