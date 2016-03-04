@@ -1,0 +1,25 @@
+digraph G {
+
+  "Person" -> "Email"
+  "University" -> "Entity" [label = "is a"]
+  "Research Institute" -> "Entity" [label = "is a"]
+  "Company" -> "Entity" [label = "is a"]
+  "SME" -> "Company" [label = "is a"]
+
+  "Person" -> "Project" [label="worked on"]
+  "Person" -> "Entity" [label="employed"]
+  "Department" -> "Entity" [label = "department of"]
+  "Department" -> "Location" [ label = "located" ]
+  "Department" -> "Topic" [label="works on"]
+  "Entity" -> "number of employees"
+  "Entity" -> "number of publications"
+  "Entity" -> "Address"
+  "Entity" -> "Project" [label="worked on"]
+  "Person" -> "Publication" [label="published"]
+  "Publication" -> "Topic" [label="has topic"]
+
+  "Email" [ shape="box"]
+  "Address" [ shape="box"]
+  "number of employees" [ shape="box" ]
+  "number of publications" [ shape="box" ]
+}
