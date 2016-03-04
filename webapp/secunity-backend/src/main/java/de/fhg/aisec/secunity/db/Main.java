@@ -29,7 +29,7 @@ public class Main {
 				+ "text.\n", true);
 		
 		// Get all triples from DB (null = wildcard)
-		RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(null,  null,  null,  false);
+		RepositoryResult<Statement> results = TripleStore.getInstance().getTriples((String) null,  (String) null,  (String) null,  false);
 		
 		// Print out triples
 		while (results.hasNext()) {

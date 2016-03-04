@@ -1,0 +1,21 @@
+version: '2'
+services:
+  database:
+    ports:
+     - "8081:8080"
+    volumes:
+     - ./database/data:/data
+    image: opensesame
+  rest_api:
+    volumes: 
+    - ./secunity-backend/build/libs/secunity-backend-1.0.war:/usr/local/tomcat/webapps/secunity-backend.war
+    ports:
+    - "8080:8080"
+    image: tomcat:8-jre8
+  frontend:
+    image: nginx
+    ports:
+    - "80:80"
+    volumes:
+    - ./frontend:/usr/share/nginx/html:ro
+    #- /var/nginx/conf:/etc/nginx:ro -P -d nginx

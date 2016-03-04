@@ -29,8 +29,10 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.min.css"> -->
     <link rel="stylesheet" href="css/material.indigo-pink.min.css" /> 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
     <script src="js/jquery.smint.js" type="text/javascript" ></script>
+    <script type="text/javascript" src="js/dialog-polyfill.js"></script>
+    <link rel="stylesheet" href="css/dialog-polyfill.css">
     <script type="text/javascript">
     $(document).ready( function() {
         $('.subMenu').smint({
@@ -60,9 +62,6 @@
       height: 176px;
       background: url('https://c1.staticflickr.com/9/8189/8137264591_c8121c918f_b.jpg') center / cover;
     }
-    .demo-card-wide > .mdl-card__menu {
-      color: #fff;
-    }
 
     .centered {
         display: table-cell;
@@ -73,6 +72,7 @@
               display: inline-block;
 
     }
+
 
     </style>
   </head>
@@ -97,9 +97,9 @@
           <!-- Navigation -->
           <div class="android-navigation-container subMenu">
             <nav class="android-navigation mdl-navigation">
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_institutions">Institutions</a>
               <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_map">Research Map</a> <!-- Jump to section map -->
               <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_topics">Topics</a>
-              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_institutions">Institutions</a>
               <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_persons">Persons</a>
             </nav>
           </div>
@@ -138,139 +138,150 @@
           <div class="logo-font slogan">secunity.</div>
           <div class="logo-font sub-slogan">security research for europe</div>
         </div>
+      
 
 
-          <div class="section_map">
-              <h2>Research Map</h2>
 
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-              tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-              quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-              consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-              proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-          
-          <div class="section_topics">
-            <h2>Topics</h2>
-            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="person">
-
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
-
-          <div class="section_institutions">
+          <div class="section_institutions" style="padding-left:30px">
             <h2>Institutions</h2>
-
-            <div style="display:table;width:100%">
-                <div class="centered">
-                    <div>
-                        <div class="demo-card-wide mdl-card mdl-shadow--2dp">
-                          <div class="mdl-card__title">
-                            <h2 class="mdl-card__title-text">Add Institution</h2>
-                          </div>
-                          <div class="mdl-card__supporting-text">
-                            <p>Add a research institution.</p>
-                                <form action="#">
-                                  <div class="mdl-textfield mdl-js-textfield">
-                                    <input class="mdl-textfield__input" type="text" id="inst-name">
-                                    <label class="mdl-textfield__label" for="inst-name">Name</label>
-                                  </div>
-                                  <div class="mdl-textfield mdl-js-textfield">
-                                    <input class="mdl-textfield__input" type="text" id="inst-city">
-                                    <label class="mdl-textfield__label" for="inst-city">City</label>
-                                  </div>
-                                </form>
-                                  <div class="mdl-textfield mdl-js-textfield">
-                                    <input class="mdl-textfield__input" type="text" id="inst-topics">
-                                    <label class="mdl-textfield__label" for="inst-topics">Topics (comma separated)</label>
-                                  </div>
-                                </form>
-                            </div>
-                          <div class="mdl-card__actions mdl-card--border">
-                            <a class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect">
-                              Add Institution
-                            </a>
-                          </div>
-                          <!--
-                          <div class="mdl-card__menu">
-                            <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                              <i class="material-icons">share</i>
-                            </button>
-                          </div>
-                          -->
-                        </div>
-                    </div>
-                    </div>
-              </div>
-
-
-            <div style="padding-top:100px;display:table;width:100%">
-                <div class="centered">
-                    <div>
-
-                        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-                          <thead>
-                            <tr>
-                              <th class="mdl-data-table__cell--non-numeric">Institution</th>
-                              <th>City</th>
-                              <th>Topics</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td class="mdl-data-table__cell--non-numeric">Fraunhofer AISEC</td>
-                              <td class="mdl-data-table__cell--non-numeric">Garching near Munich</td>
-                              <td class="mdl-data-table__cell--non-numeric">Hardware Sidechannel Attacks, Android Security, Privacy</td>
-                            </tr>
-                            <tr>
-                              <td class="mdl-data-table__cell--non-numeric">Fraunhofer-Institut für Sichere Informationstechnologie (SIT)</td>
-                              <td class="mdl-data-table__cell--non-numeric">Darmstadt</td>
-                              <td class="mdl-data-table__cell--non-numeric"></td>
-                            </tr>
-                            <tr>
-                              <td class="mdl-data-table__cell--non-numeric">Karlsruher Institut für Technologie (KIT), Zentrum für Angewandte Rechtswissenschaft</td>
-                              <td class="mdl-data-table__cell--non-numeric">Karlsruhe</td>
-                              <td class="mdl-data-table__cell--non-numeric"></td>
-                            </tr>
-                            <tr>
-                              <td class="mdl-data-table__cell--non-numeric">Ruhr-Universität Bochum, Horst Görtz Institut für IT-Sicherheit (HGI)</td>
-                              <td class="mdl-data-table__cell--non-numeric">Bochum</td>
-                              <td class="mdl-data-table__cell--non-numeric"></td>
-                            </tr>
-                            <tr>
-                              <td class="mdl-data-table__cell--non-numeric">Technische Universität Darmstadt, Software Business & Information Management</td>
-                              <td class="mdl-data-table__cell--non-numeric">Darmstadt</td>
-                              <td class="mdl-data-table__cell--non-numeric"></td>
-                            </tr>
-                            <tr>
-                              <td class="mdl-data-table__cell--non-numeric">Universität des Saarlandes, Center for IT Security, Privacy and Accountability (CISPA)</td>
-                              <td class="mdl-data-table__cell--non-numeric">Saarbrücken</td>
-                              <td class="mdl-data-table__cell--non-numeric"></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div style="position:relative;top:-65px;left:240px"
+                 <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+                    <i class="material-icons">add</i>
+                 </button>
             </div>
 
-          <div class="section_persons">
-            <h2>Topics</h2>
-            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="person">
+            <div style="display:table;width:100%;padding:30px">
+                <div style="display:table-row">
+                    <div style="display:table-cell">
+                        <div class="mdl-card mdl-shadow--4dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Fraunhofer AISEC</h2>
+                            </div>
+                            <div class="mdl-card__media">
+                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                                Fraunhofer Institute for Applied and Integrated Security (AISEC)
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                              The Sky Tower is an observation and telecommunications tower located in Auckland,
+                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
+                              in the Southern Hemisphere.
+                              </div>
+                            <div class="mdl-card__menu">
+                                <button id="show-dialog" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">edit</i>
+                                </button>
+                            </div>           
+                        </div> 
+                    </div>
 
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-            cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-            proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-          </div>
+
+                    <div style="display:table-cell">
+                        <div class="mdl-card mdl-shadow--4dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">KIT</h2>
+                            </div>
+                            <div class="mdl-card__media">
+                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                                Karlsruher Institut für Technologie (KIT), Zentrum für Angewandte Rechtswissenschaft
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                              The Sky Tower is an observation and telecommunications tower located in Auckland,
+                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
+                              in the Southern Hemisphere.
+                              </div>
+                            <div class="mdl-card__menu">
+                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">edit</i>
+                                </button>
+                            </div>           
+                        </div> 
+                    </div>
 
 
+                    <div style="display:table-cell">
+                        <div class="mdl-card mdl-shadow--4dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Horst-Görtz-Institut</h2>
+                            </div>
+                            <div class="mdl-card__media">
+                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                                Ruhr-Universität Bochum, Horst Görtz Institut für IT-Sicherheit (HGI)
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                              The Sky Tower is an observation and telecommunications tower located in Auckland,
+                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
+                              in the Southern Hemisphere.
+                              </div>
+                            <div class="mdl-card__menu">
+                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">edit</i>
+                                </button>
+                            </div>           
+                        </div> 
+                    </div>
+                </div>
+
+                <div style="padding-top:50px"></div>
+
+                <div style="display:table-row">
+                    <div style="display:table-cell">
+                        <div class="mdl-card mdl-shadow--4dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">TU Darmstadt SBI</h2>
+                            </div>
+                            <div class="mdl-card__media">
+                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                                Technische Universität Darmstadt, Software Business and Information Management
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                              The Sky Tower is an observation and telecommunications tower located in Auckland,
+                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
+                              in the Southern Hemisphere.
+                              </div>
+                            <div class="mdl-card__menu">
+                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">edit</i>
+                                </button>
+                            </div>           
+                        </div> 
+                    </div>
+
+
+                    <div style="display:table-cell">
+                        <div class="mdl-card mdl-shadow--4dp">
+                            <div class="mdl-card__title">
+                                <h2 class="mdl-card__title-text">Uni Saarland CISPA</h2>
+                            </div>
+                            <div class="mdl-card__media">
+                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                                Universität des Saarlandes, Center for IT Security, Privacy and Accountability (CISPA)
+                              </div>
+                              <div class="mdl-card__supporting-text">
+                              The Sky Tower is an observation and telecommunications tower located in Auckland,
+                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
+                              in the Southern Hemisphere.
+                              </div>
+                            <div class="mdl-card__menu">
+                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                                <i class="material-icons">edit</i>
+                                </button>
+                            </div>           
+                        </div> 
+                    </div>
+                </div>
+              </div>
+        </div>
+        
 
           <div class="mdl-mega-footer--bottom-section">
             <a class="android-link android-link-menu mdl-typography--font-light" id="developers-dropdown">
@@ -287,7 +298,51 @@
         </footer>
       </div>
     </div>
-    <!--<a href="https://github.com/google/material-design-lite/blob/master/templates/android-dot-com/" target="_blank" id="view-source" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-color--accent mdl-color-text--accent-contrast">View Source</a>-->
+
+
+
+        <dialog id="modal_add_inst">
+            <div class="modal demo-card-wide mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">Add Institution</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <p>Add a research institution.</p>
+                    <form action="#">
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="inst-name">
+                            <label class="mdl-textfield__label" for="inst-name">Name</label>
+                        </div>
+                        <div class="mdl-textfield mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="inst-city">
+                            <label class="mdl-textfield__label" for="inst-city">City</label>
+                        </div>
+                    </form>
+                    <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="inst-topics">
+                        <label class="mdl-textfield__label" for="inst-topics">Topics (comma separated)</label>
+                    </div>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                        Add Institution
+                    </a>
+                </div>
+        </dialog>
+
    <script src="js/material.min.js"></script>
+    <script>
+        var dialog = document.querySelector('#modal_add_inst');
+        var showDialogButton = document.querySelector('#show-dialog');
+        if (! dialog.showModal) {
+          dialogPolyfill.registerDialog(dialog);
+        }
+        showDialogButton.addEventListener('click', function() {
+          dialog.showModal();
+        });
+        dialog.querySelector('.close').addEventListener('click', function() {
+          dialog.close();
+        });
+    </script>
   </body>
 </html>
