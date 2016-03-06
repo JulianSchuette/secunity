@@ -10,12 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
-import org.openrdf.model.Resource;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.vocabulary.RDF;
@@ -50,7 +48,7 @@ public class Institution {
     	}
     	HashMap<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
     	result.put(institution, data);
-    	return Response.ok().entity(Entity.json(data)).build();    	
+    	return Response.ok().entity(Entity.json(result)).build();    	
 	}
 
     @POST
@@ -67,6 +65,7 @@ public class Institution {
     	TripleStore.getInstance().addTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Institution"), false);
     	for (String predicate:data.keySet()) {
 			String object = data.get(predicate);
+			System.out.println(institution + " " + predicate + " " + object);
 			TripleStore.getInstance().addTriple(institution, predicate, object, false);
     	}
     	
