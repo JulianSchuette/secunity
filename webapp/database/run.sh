@@ -1,7 +1,0 @@
-#!/bin/bash
-
-export JAVA_OPTS="$JAVA_OPTS -Dinfo.aduna.platform.appdata.basedir=/data"
-export CATALINA_PID=${CATALINA_HOME}/temp/tomcat.pid
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx${JAVA_MAXMEMORY}m -Djava.security.egd=file:/dev/./urandom"
-
-exec ${CATALINA_HOME}/bin/catalina.sh run

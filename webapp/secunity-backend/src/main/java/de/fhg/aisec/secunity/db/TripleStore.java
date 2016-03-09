@@ -72,6 +72,8 @@ public class TripleStore {
 		repo.initialize();
 		repo.getConnection().setNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		repo.getConnection().setNamespace("akt", "http://www.aktors.org/ontology/portal#");
+		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
+		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
 		repo.getConnection().setNamespace("su", NAMESPACE);
 		
 		if (!repoExists) {
@@ -173,11 +175,13 @@ public class TripleStore {
 	
 	public IRI toEntity(String literal) {
 		ValueFactory f = repo.getValueFactory();
-		if (literal.contains(":")) {
+		if (literal.contains(":") && !literal.contains("://")) {
 			String[] parts = literal.split(":");
 			return f.createIRI(repo.getConnection().getNamespace(parts[0]), parts[1]);
-		} else {
+		} else if (!literal.contains("://")) {
 			return f.createIRI(NAMESPACE, literal);
+		} else {
+			return f.createIRI(literal);
 		}
 	}
 	

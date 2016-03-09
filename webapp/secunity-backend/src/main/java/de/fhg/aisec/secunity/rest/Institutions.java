@@ -34,7 +34,7 @@ public class Institutions {
     			if (prefix !=null) {
     				data.add(prefix + ":" + ((IRI)s).getLocalName());
     			} else {
-    				data.add(((IRI)s).getLocalName());
+    				data.add(s.stringValue());
     			}
     		} else {
     			throw new RuntimeException("Unsupported type " + s.getClass());

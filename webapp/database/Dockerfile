@@ -39,6 +39,9 @@ RUN echo "<tomcat-users>\
                 <user username=\"admin\" password=\"admin\" roles=\"manager-gui\"/> \
            </tomcat-users>" > $CATALINA_BASE/conf/tomcat-users.xml
 
+# Quick hack to remove maxPostSize limit to allow uploading large RDF files
+RUN sed -i 's/<Connector port="8080" protocol="HTTP\/1.1"/<Connector port="8080" protocol="org.apache.coyote.http11.Http11NioProtocol" socket.soKeepAlive="true" maxPostSize="0"/g' /tomcat/conf/server.xml
+
 # Install Sesame
 RUN curl -sS -o /tmp/sesame.tar.gz -L http://sourceforge.net/projects/sesame/files/Sesame%204/$SESAME_VERSION/openrdf-sesame-$SESAME_VERSION-sdk.tar.gz/download && \
     tar -xzf /tmp/sesame.tar.gz -C /opt && \ 
@@ -54,7 +57,7 @@ RUN mkdir ${CATALINA_BASE}/webapps/openrdf-sesame && \
     jar xf /opt/sesame/war/openrdf-workbench.war
 
 
-ADD run.sh /run.sh
+ADD docker-files/run.sh /run.sh
 RUN chmod +x /*.sh
 
 EXPOSE 8080

@@ -29,54 +29,139 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- <link rel="stylesheet" href="https://code.getmdl.io/1.1.1/material.min.css"> -->
     <link rel="stylesheet" href="css/material.indigo-pink.min.css" /> 
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script src="js/jquery.smint.js" type="text/javascript" ></script>
-    <script type="text/javascript" src="js/dialog-polyfill.js"></script>
+    <link rel="stylesheet" href="css/material.components.ext.min.css" /> 
     <link rel="stylesheet" href="css/dialog-polyfill.css">
-    <script type="text/javascript">
-    $(document).ready( function() {
-        $('.subMenu').smint({
-            'scrollSpeed' : 100
-        });
-    });
-    </script>    
     <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/dialog-polyfill.js"></script>
+    
+    <script type='text/javascript'><!--
+      var lon = 19.35;
+      var lat = 48.55;
+      var zoom = 12;
+      var features = "2:3;1:1;1:2;2:4;5:17;5:18;3:8;3:9;3:10";
+      //
+      var PI = 3.14159265358979323846;
+      lon_map = lon * 20037508.34 / 180;
+      lat_map = Math.log(Math.tan( (90 + lat) * PI / 360)) / (PI / 180);
+      lat_map = lat_map * 20037508.34 / 180;
+--></script>
+
+    <!-- <script type="text/javascript" src="js/OpenLayers2.7.js"></script> -->
+
+    <script type="text/javascript"><!--
+        var map;
+        var POI;
+    
+        function get_osm_url (bounds) {
+          var res = this.map.getResolution();
+          var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+          var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+          var z = this.map.getZoom();
+          var path =  z + "/" + x + "/" + y ;
+          var url = this.url;
+          if (url instanceof Array) {
+            url = this.selectUrl(path, url);
+          }
+          return url + path;
+        }
+
+        function get_poi_url (bounds) {
+          //bounds = this.adjustBounds(bounds);
+          var res = this.map.getResolution();
+          var z = this.map.getZoom();
+          var path = "?z=" + z
+          + "&l=" + getLeft(bounds)
+          + "&t=" + getTop(bounds)
+          + "&r=" + getRight(bounds)
+          + "&b=" + getBottom(bounds)
+          + "&f=" + features;
+          var url = "http://localhost/secunity-backend/api/pois/";
+          return url + path;
+        }
+
+        function init() {
+          OpenLayers.Util.onImageLoadErrorColor= "#E7FFC2";
+          
+          OpenLayers.Util.onImageLoadError = function() {
+            this.style.backgroundColor= null;
+            this.src = "img/my404t.png";
+          }
+
+          //45.93591170013053,13.524035160395303
+          //51.08285790895948,26.004501207203198
+          //5770084.965702645,1505488.7073159674
+          //6635963.434452645,2894807.8323159674
+          var map = new OpenLayers.Map("demoMap");
+          var layerm1 = new OpenLayers.Layer.OSM();
+          // // layerm1 = new OpenLayers.Layer.TMS( "Freemap Slovakia", "http://tiles.freemap.sk/A/", {
+          // //   type:'png',
+          // //   getURL: get_osm_url
+          // // });
+          var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+          var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+          var position       = new OpenLayers.LonLat(13.41,52.52).transform( fromProjection, toProjection);
+          var zoom           = 5; 
+          layerm1.setVisibility(true);
+
+
+          map = new OpenLayers.Map("demoMap");
+          map.addLayer(new OpenLayers.Layer.OSM());
+          map.zoomToMaxExtent();
+
+          // create POI layer
+          POI = new OpenLayers.Layer.MarkerGrid( "POI",
+            {
+               type:'txt',
+               getURL: get_poi_url,
+               attribution: "SecUnity Data",
+               buffer: 0
+             });
+           POI.setIsBaseLayer(false);
+           POI.setVisibility(true);
+          map.addLayers([layerm1, POI]);
+          map.setCenter(position, zoom );
+        }
+        // -->
+    </script>    
     <style>
-    /* Nice highlighted button */
-    #view-source {
-      position: fixed;
-      display: block;
-      right: 0;
-      bottom: 0;
-      margin-right: 40px;
-      margin-bottom: 40px;
-      z-index: 900;
-    }
+        /* Nice highlighted button */
+        #view-source {
+          position: fixed;
+          display: block;
+          right: 0;
+          bottom: 0;
+          margin-right: 40px;
+          margin-bottom: 40px;
+          z-index: 900;
+        }
 
-    /* A wide card */
-    .demo-card-wide.mdl-card {
-      width: 512px;
-    }
-    .demo-card-wide > .mdl-card__title {
-      color: #fff;
-      height: 176px;
-      background: url('https://c1.staticflickr.com/9/8189/8137264591_c8121c918f_b.jpg') center / cover;
-    }
+        /* A wide card */
+        .demo-card-wide.mdl-card {
+          width: 512px;
+        }
+        .demo-card-wide > .mdl-card__title {
+          color: #fff;
+          height: 176px;
+          background: url('https://c1.staticflickr.com/9/8189/8137264591_c8121c918f_b.jpg') center / cover;
+        }
 
-    .centered {
-        display: table-cell;
-        text-align: center;
-    }
+        .centered {
+            display: table-cell;
+            text-align: center;
+        }
 
-    .centered > div {
-              display: inline-block;
-
-    }
-
-
+        .centered > div {
+                  display: inline-block;
+        }
+        div.olControlAttribution, div.olControlScaleLine {
+          font-family: Verdana;
+          font-size: 0.2em;
+          bottom: 3px;
+        }
     </style>
   </head>
-  <body>
+  <body onload="init()">
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
       <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
@@ -150,138 +235,15 @@
                  </button>
             </div>
 
-            <div style="display:table;width:100%;padding:30px">
-                <div style="display:table-row">
-                    <div style="display:table-cell">
-                        <div class="mdl-card mdl-shadow--4dp">
-                            <div class="mdl-card__title">
-                                <h2 class="mdl-card__title-text">Fraunhofer AISEC</h2>
-                            </div>
-                            <div class="mdl-card__media">
-                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                                Fraunhofer Institute for Applied and Integrated Security (AISEC)
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                              The Sky Tower is an observation and telecommunications tower located in Auckland,
-                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-                              in the Southern Hemisphere.
-                              </div>
-                            <div class="mdl-card__menu">
-                                <button id="show-dialog" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                                </button>
-                            </div>           
-                        </div> 
-                    </div>
+            <div id="instTable" class="mdl-grid">
 
+            </div>
+          </div>
 
-                    <div style="display:table-cell">
-                        <div class="mdl-card mdl-shadow--4dp">
-                            <div class="mdl-card__title">
-                                <h2 class="mdl-card__title-text">KIT</h2>
-                            </div>
-                            <div class="mdl-card__media">
-                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                                Karlsruher Institut für Technologie (KIT), Zentrum für Angewandte Rechtswissenschaft
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                              The Sky Tower is an observation and telecommunications tower located in Auckland,
-                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-                              in the Southern Hemisphere.
-                              </div>
-                            <div class="mdl-card__menu">
-                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                                </button>
-                            </div>           
-                        </div> 
-                    </div>
-
-
-                    <div style="display:table-cell">
-                        <div class="mdl-card mdl-shadow--4dp">
-                            <div class="mdl-card__title">
-                                <h2 class="mdl-card__title-text">Horst-Görtz-Institut</h2>
-                            </div>
-                            <div class="mdl-card__media">
-                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                                Ruhr-Universität Bochum, Horst Görtz Institut für IT-Sicherheit (HGI)
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                              The Sky Tower is an observation and telecommunications tower located in Auckland,
-                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-                              in the Southern Hemisphere.
-                              </div>
-                            <div class="mdl-card__menu">
-                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                                </button>
-                            </div>           
-                        </div> 
-                    </div>
-                </div>
-
-                <div style="padding-top:50px"></div>
-
-                <div style="display:table-row">
-                    <div style="display:table-cell">
-                        <div class="mdl-card mdl-shadow--4dp">
-                            <div class="mdl-card__title">
-                                <h2 class="mdl-card__title-text">TU Darmstadt SBI</h2>
-                            </div>
-                            <div class="mdl-card__media">
-                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                                Technische Universität Darmstadt, Software Business and Information Management
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                              The Sky Tower is an observation and telecommunications tower located in Auckland,
-                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-                              in the Southern Hemisphere.
-                              </div>
-                            <div class="mdl-card__menu">
-                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                                </button>
-                            </div>           
-                        </div> 
-                    </div>
-
-
-                    <div style="display:table-cell">
-                        <div class="mdl-card mdl-shadow--4dp">
-                            <div class="mdl-card__title">
-                                <h2 class="mdl-card__title-text">Uni Saarland CISPA</h2>
-                            </div>
-                            <div class="mdl-card__media">
-                                <img src="skytower.jpg" width="173" height="157" border="0" alt="" style="padding:10px;">
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                                Universität des Saarlandes, Center for IT Security, Privacy and Accountability (CISPA)
-                              </div>
-                              <div class="mdl-card__supporting-text">
-                              The Sky Tower is an observation and telecommunications tower located in Auckland,
-                              New Zealand. It is 328 metres (1,076 ft) tall, making it the tallest man-made structure
-                              in the Southern Hemisphere.
-                              </div>
-                            <div class="mdl-card__menu">
-                                <button class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                                <i class="material-icons">edit</i>
-                                </button>
-                            </div>           
-                        </div> 
-                    </div>
-                </div>
-              </div>
-        </div>
-        
+          <div class="section_map" style="padding-left:30px">
+              <h2>Research Map</h2>
+              <div id="demoMap" style="height:500px;width:500px"></div>
+          </div>
 
           <div class="mdl-mega-footer--bottom-section">
             <a class="android-link android-link-menu mdl-typography--font-light" id="developers-dropdown">
@@ -302,23 +264,44 @@
 
 
         <dialog id="modal_add_inst">
-            <div class="modal demo-card-wide mdl-card mdl-shadow--2dp">
+            <div class="modal demo-card-wide mdl-card">
                 <div class="mdl-card__title">
                     <h2 class="mdl-card__title-text">Add Institution</h2>
                 </div>
                 <div class="mdl-card__supporting-text">
                     <p>Add a research institution.</p>
                     <form id="addInstForm" action="#">
-                        <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="instName" name="instName">
-                            <label class="mdl-textfield__label" for="instName">Name</label>
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="instName" name="su:has-name" maxlength="20">
+                            <label class="mdl-textfield__label" for="instName">Short name</label>
                         </div>
-                        <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="instCity" name="instCity">
-                            <label class="mdl-textfield__label" for="instCity">City</label>
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="instName" name="akts:has-pretty-name">
+                            <label class="mdl-textfield__label" for="instName">Complete Name</label>
                         </div>
-                        <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="instTopics" name="instTopics">
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="instSuperInst" name="akts:sub-unit-of-organization-unit">
+                            <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
+                        </div>
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-city-or-village">
+                            <label class="mdl-textfield__label" for="instCounty">City</label>
+                        </div>
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-country">
+                            <label class="mdl-textfield__label" for="instCounty">Country</label>
+                        </div>
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <textarea class="mdl-textfield__input" type="text" rows= "5" id="instDescription" name="has_description"></textarea>
+                            <label class="mdl-textfield__label" for="instDescription">Description ...</label>
+                        </div>
+                        <div class="element file mdl-file mdl-js-file mdl-file--floating-label">
+                            <input type="file" name="avatar[profileImage]" id="profileImage" multiple="multiple" accept=".jpg,.gif,.png,.svg">
+                            <label class="mdl-file__label" for="profileImage">Title Image</label>
+                            <span class="mdl-textfield__error">You can upload only </span>
+                        </div>
+                        <div class="mdl-textfield--full-width mdl-js-textfield">
+                            <input class="mdl-textfield__input" type="text" id="instTopics" name="works_on_topics">
                             <label class="mdl-textfield__label" for="instTopics">Topics (comma separated)</label>
                         </div>
                     </form>
@@ -334,6 +317,7 @@
         </dialog>
 
    <script src="js/material.min.js"></script>
+   <script src="js/material.components.ext.min.js"></script>
     <script>
         var dialog = document.querySelector('#modal_add_inst');
         var showDialogButton = document.querySelector('#show-dialog');
@@ -347,6 +331,11 @@
           dialog.close();
         });
     </script>
-    <script src="js/secunity.js" type="text/javascript" ></script>
+    <script type="text/javascript" src="js/OpenLayers.js"></script>
+    <script type="text/javascript" src="js/jquery.smint.js"></script>
+    <script type="text/javascript" src="js/secunity.js"></script>
+    <script type="text/javascript" src="js/MarkerGrid.js"></script>
+    <script type="text/javascript" src="js/MarkerTile.js"></script>
+    <script type="text/javascript" src="js/bounds.js"></script>
   </body>
 </html>

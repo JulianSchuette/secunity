@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,13 +33,13 @@ public class BackendTest extends JerseyTest {
 	    }
 	    
 	    @Test
-	    public void testCreateInstitution() {
+	    public void testCreateInstitution() throws UnsupportedEncodingException {
 	    	// Create new entry
 	    	Map<String, String> data = new HashMap<String, String>();
 	    	data.put("city", "Garching near Munich");
 	    	data.put("topic", "Hardware Security");
 	    	data.put("topic", "Software Security");
-	        Response resp = target("institution/Fraunhofer AISEC").request().post(Entity.json(data), Response.class);
+	        Response resp = target(URLEncoder.encode("institution/Fraunhofer AISEC", "UTF-8")).request().post(Entity.json(data), Response.class);
 	        assertEquals(200, resp.getStatus());
 	        
 	        // Retrieve entry

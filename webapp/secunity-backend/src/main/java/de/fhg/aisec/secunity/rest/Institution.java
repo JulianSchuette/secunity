@@ -28,23 +28,27 @@ public class Institution {
     @Produces("application/json; charset=UTF-8")
 	public Response getInstitution(@PathParam("institution") String institution) {
 		HashMap<String, String> data = new HashMap<String, String>();
-
+		System.out.println("Received " + institution);
 		//get all attributes of an institution from triple store
     	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(TripleStore.getInstance().toEntity(institution), (String) null, (String) null, true);
     	while (res.hasNext()) {
     		Statement stmt = res.next();
     		IRI p = stmt.getPredicate();
     		Value o = stmt.getObject();
-    		//Strip off namespace, if any
+    		//Replace namespaces by prefixes
+    		
+    		String predicate = TripleStore.getInstance().getPrefix(p.getNamespace())!=null?
+    							TripleStore.getInstance().getPrefix(p.getNamespace()) + ":" + p.getLocalName():
+    							p.stringValue();    		
     		String object;
     		if (o instanceof Literal) {
     			object = ((Literal) o).getLabel();
     		} else if (o instanceof IRI) {
-    			object = ((IRI) o).getLocalName();
+    			object = TripleStore.getInstance().getPrefix(((IRI) o).getNamespace()) + ":" + ((IRI) o).getLocalName();
     		} else {
     			throw new RuntimeException("Unexpected type " + o.getClass());
     		}
-    		data.put(p.getLocalName(), object);
+    		data.put(predicate, object);
     	}
     	HashMap<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
     	result.put(institution, data);
