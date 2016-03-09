@@ -25,12 +25,17 @@ public class Institutions {
 		HashSet<String> data = new HashSet<String>();
 
 		//get all institutions from triple store
-    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(null,  RDF.TYPE, TripleStore.getInstance().toEntity("Institution"), false);
+    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(null,  RDF.TYPE, TripleStore.getInstance().toEntity("akt:Organization"), false);
     	while (res.hasNext()) {
     		Statement stmt = res.next();
     		Resource s = stmt.getSubject();
     		if (s instanceof IRI) {
-        		data.add(((IRI) s).getLocalName());
+    			String prefix = TripleStore.getInstance().getPrefix(((IRI)s).getNamespace());
+    			if (prefix !=null) {
+    				data.add(prefix + ":" + ((IRI)s).getLocalName());
+    			} else {
+    				data.add(((IRI)s).getLocalName());
+    			}
     		} else {
     			throw new RuntimeException("Unsupported type " + s.getClass());
     		}

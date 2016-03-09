@@ -1,16 +1,18 @@
 package de.fhg.aisec.secunity.db;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Enumeration;
 
 import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
+import org.openrdf.model.Namespace;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.SimpleIRI;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
@@ -58,7 +60,8 @@ public class TripleStore {
 		// Use RemoteRepoManager to check if repo exists
 	    RemoteRepositoryManager manager = new RemoteRepositoryManager(url.toString());
 	    manager.initialize();
-	    if (manager.getRepository(repoID)==null) {
+	    boolean repoExists = manager.getRepository(repoID)!=null;
+	    if (!repoExists) {
 	    	//Create repo, if not there
 	    	System.out.println("Creating repository " + repoID);
 	    	createRemoteRepository(manager, repoID);
@@ -68,11 +71,48 @@ public class TripleStore {
 		repo = new HTTPRepository(url.toString(), repoID);
 		repo.initialize();
 		repo.getConnection().setNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		repo.getConnection().setNamespace("akt", "http://www.aktors.org/ontology/portal#");
 		repo.getConnection().setNamespace("su", NAMESPACE);
-			
+		
+		if (!repoExists) {
+	    	try {
+				loadInitialData();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return repo;
 	}
 	
+	private void loadInitialData() throws IOException {
+		System.out.println(new File(".").getAbsolutePath());
+		Enumeration<URL> en=getClass().getClassLoader().getResources("datasets");
+		
+		while (en.hasMoreElements()) {
+			URL url = en.nextElement();
+			for (File f: new File(url.getPath()).listFiles()) {
+					try {						
+					String ext = f.getName().substring(f.getName().lastIndexOf(".")+1);
+					switch (ext.toLowerCase()) {
+					case "ttl":
+						repo.getConnection().add(f, NAMESPACE, RDFFormat.TURTLE);
+						break;
+					case "rdf":
+						repo.getConnection().add(f, NAMESPACE, RDFFormat.RDFXML);
+						break;
+					case "n3":
+						repo.getConnection().add(f, NAMESPACE, RDFFormat.N3);
+					}
+				} catch (RDFParseException | RepositoryException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		
+	}
+
 	public Repository getRepository() {
 		return repo;
 	}
@@ -118,9 +158,27 @@ public class TripleStore {
 		repo.getConnection().add(url, url.toString(), RDFFormat.RDFXML);
 	}
 	
+	public String getPrefix(String namespace) {
+		for ( Namespace ns: Iterations.asList(repo.getConnection().getNamespaces())) {
+			if (ns.getName().equals(namespace)) {
+				return ns.getPrefix();
+			}
+		}
+		return null;
+	}
+	
+	public String getNamespace(String prefix) {
+		return repo.getConnection().getNamespace(prefix);
+	}
+	
 	public IRI toEntity(String literal) {
 		ValueFactory f = repo.getValueFactory();
-		return f.createIRI(NAMESPACE, literal);
+		if (literal.contains(":")) {
+			String[] parts = literal.split(":");
+			return f.createIRI(repo.getConnection().getNamespace(parts[0]), parts[1]);
+		} else {
+			return f.createIRI(NAMESPACE, literal);
+		}
 	}
 	
 	/**
@@ -156,6 +214,13 @@ public class TripleStore {
 		return repo.getConnection().getStatements(s, predicate, object, includeInferred);
 	}
 	
+	public RepositoryResult<Statement> getTriples(IRI subject, String predicate, String object, boolean includeInferred) {
+		ValueFactory f = repo.getValueFactory();
+		IRI p = predicate!=null?f.createIRI(NAMESPACE, predicate):null;
+		Value o = object!=null?f.createLiteral(object):null;
+		return repo.getConnection().getStatements(subject, p, o, includeInferred);
+	}
+
 	public void addTriple(String subject, IRI predicate, IRI object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
 		IRI s = f.createIRI(NAMESPACE, subject);

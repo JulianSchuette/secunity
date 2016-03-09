@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE owl [
+  <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+  <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#">
+  <!ENTITY dc "http://purl.org/dc/elements/1.1/">
+  <!ENTITY dct "http://purl.org/dc/terms/">
+  <!ENTITY akt "http://www.aktors.org/ontology/portal#">
+  <!ENTITY akts "http://www.aktors.org/ontology/support#">
+  <!ENTITY unlocode "http://unlocode.rkbexplorer.com/id/">
+]>
+<rdf:RDF
+         xmlns:owl="&owl;"
+         xmlns:rdf="&rdf;"
+         xmlns:rdfs="&rdfs;"
+         xmlns:dc="&dc;"
+         xmlns:dct="&dct;"
+         xmlns:akt="&akt;"
+         xmlns:akts="&akts;"
+         xmlns:unlocode="&unlocode;"
+>
+
+  <owl:Ontology rdf:about="">
+    <rdfs:label>Southampton University : ./rdf/new-cordis-projects-2009.rdf</rdfs:label>
+    <dc:title xml:lang="en">Southampton University : ./rdf/new-cordis-projects-2009.rdf</dc:title>
+    <dc:description xml:lang="en">This ontology contains information detailing research projects that have been funded by the European Union</dc:description>
+    <dc:creator>ReSIST Project</dc:creator>
+    <dc:creator>Ian Millard</dc:creator>
+    <dc:creator>Christopher Franklin</dc:creator>
+    <owl:imports rdf:resource="http://www.aktors.org/ontology/portal"/>
+    <owl:imports rdf:resource="http://www.aktors.org/ontology/extension"/>
+  </owl:Ontology>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10167697">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Galaxies through the cosmic ages: the role of primordial conditions and environmental effects</akt:has-title>
+    <akt:has-goals>The observed properties of galaxies have long been known to depend on the environment in which they are located. The physical origin of the observed environmental trends is, however, still a subject of debate. Much of the argument centres on whether these trends are the end products of physical processes acting over the entire lifetime of a galaxy (the nurture hypothesis), or whether they are established at formation (the nature hypothesis).
+One element is often overlooked in this debate: according to the current paradigm for structure formation, dark matter collapses into haloes in a bottom-up fashion. Small objects form first and subsequently merge into progressively larger systems. As structure grows, galaxies join more and more massive systems, and so experience a variety of environments over their lifetimes. Thus both initial conditions and subsequent physical processes must play a role in shaping the observed properties of galaxies, and their variation with environment.</akt:has-goals>
+    <akts:has-pretty-name>STGDELUCIA2007</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-02-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>02</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2014-01-31">
+                    <akts:year-of>2014</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-SCI"/>
+202781#750000  EURO#750000  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-62f5b9203eca57fad37c0568492ffb9f">
+            <akts:has-pretty-name>ISTITUTO NAZIONALE DI ASTROFISICA</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-6fd00c2be3d3ac202c9074ca622b89db-147b0d5254ee3c5195f184e53bd0ca3a">
+            <akt:full-name>Stefano CRISTIANI (Professor)</akt:full-name>
+            <akt:has-telephone-number>+39-040-3199220</akt:has-telephone-number>
+            <akt:has-fax-number>+39-040-309418</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-62f5b9203eca57fad37c0568492ffb9f"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10163336">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>The geometry of topological quantum field theories</akt:has-title>
+    <akt:has-goals>The predictive power of quantum field theory (QFT) is a perpetual driving force in geometry. Examples include the invention of Frobenius manifolds, mixed twistor structures, primitive forms, and harmonic bundles, up to the discovery of the McKay correspondence, mirror symmetry, and Gromov-Witten invariants. Still seemingly disparate, in fact these all are related to topological (T) QFT and thereby to the work by Cecotti, Vafa et al of more than 20 years ago.
+The broad aim of the proposed research is to pull the strands together which have evolved from TQFT, by implementing insights from mathematics and physics. The goal is a unified, conclusive picture of the geometry of TQFTs. Solving the fundamental questions on the underlying common structure will open new horizons for all disciplines built on TQFT. Hertling's TERP structures, formally unifying the geometric ingredients, will be key.</akt:has-goals>
+    <akts:has-pretty-name>TQFT</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-01-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2013-12-31">
+                    <akts:year-of>2013</akts:year-of>
+                    <akts:month-of>12</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-SCI"/>
+204757#750000  EURO#750000  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-6d2f20b9cd88c122ec1c8c2b93bc3a1d">
+            <akts:has-pretty-name>UNIVERSITAET AUGSBURG.</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-768a0a9f2bb1261dd7210150711bebd5-a00f8b7f43acf27ba6a8a108b0eaca95">
+            <akt:full-name>Alois ZIMMERMANN (Mr)</akt:full-name>
+            <akt:has-telephone-number>+49-821-5985200</akt:has-telephone-number>
+            <akt:has-fax-number>+49-821-5985505</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-6d2f20b9cd88c122ec1c8c2b93bc3a1d"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10168810">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Scientific discoveries and the public debate on the human condition in victorian britain: an analysis of periodicals for young readers, 1847-1900</akt:has-title>
+    <akt:has-goals>In Britain, from the middle of the nineteenth century on, scientific discoveries (e.g. anaesthesia) and theories (e.g. evolution theory) fundamentally changed the way humanity perceives of itself; science engendered a controversial cultural debate on the human condition and on humanity s position in nature (or creation ) that is still on-going. On the basis of a large corpus of Victorian periodicals for young readers, the project will examine the treatment of natural and human sciences (i.e. biology, medicine, ethnology, anthropology) and the extent to which this treatment reflects and positions itself within this public debate.</akt:has-goals>
+    <akts:has-pretty-name>SCIENCE IN MAGAZINES</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-01-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2010-12-31">
+                    <akts:year-of>2010</akts:year-of>
+                    <akts:month-of>12</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-EDU"/>
+219161#170142  EURO#170142  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-4c1a5bf5a3934c2ef84a7bb9b4bee376">
+            <akts:has-pretty-name>THE UNIVERSITY OF EDINBURGH</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-276883fb40cc8dc965dd03217d720a16-0198356c793cc9b3fe15a93a75c885ba">
+            <akt:full-name>Angela NOBLE (Ms.)</akt:full-name>
+            <akt:has-telephone-number>+44-01316509024</akt:has-telephone-number>
+            <akt:has-fax-number>+44-01316509023</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-4c1a5bf5a3934c2ef84a7bb9b4bee376"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10179660">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Wireless sensor networks for the protection of critical infrastructures</akt:has-title>
+    <akt:has-goals>The goal of WSAN4CIP is to substantially advance the technology of Wireless Sensor and Actuator Networks (WSANs) beyond the current state of the art and to apply this technology to the Protection of Critical Infrastructures. 
+ 
+In particular, the WSAN4CIP project will apply these advanced wireless and sensor network developments to the management of power generation and distribution infrastructure management systems, which is one of the most demanding applications for wireless infrastructure, to demonstrate the appropriateness and effectiveness of the WSAN4CIP project results. 
+ 
+The project will contribute to making networked information and process control systems much more secure and resilient. The highly distributed nature of Wireless Sensor and Actuator Networks (WSANs) boosts their ability to survive malicious attacks as well as accidental and operational failures. It makes them dependable in critical situations, when information is needed to prevent further damage to Critical Infrastructures (CIs). 
+ 
+As WSANs are inexpensive to deploy and self-organizing it is both practical and efficient to consider an emergency extension of the WSAN as a first reaction to CI problems. The WSAN4CIP project will show how exploiting these features make WSAN an ideal mechanism to improve situation awareness of managing tools for critical infrastructures. 
+ 
+A main challenge of the WSAN4CIP project is that the current state-of-the-art technology for WSANs is not sufficiently dependable for CI use. The WSAN4CIP project will: 
+- Design new sensor node protection mechanisms to improve their dependability 
+- Develop innovative dependable networking approaches for WSANs 
+- Create dependable services to run on top of WSANs that ensure a controlled degradation of information in case of failures rather than total management system failure. 
+ 
+The project will also develop design methodologies, and define an open interface to ensure interoperability with existing CI management applications.</akt:has-goals>
+    <akts:has-pretty-name>WSAN4CIP</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-01-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2011-12-31">
+                    <akts:year-of>2011</akts:year-of>
+                    <akts:month-of>12</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-ELM"/>
+225186#4020996  EURO#2775000  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-1d882206e85800e5bd631670de302172">
+            <akts:has-pretty-name>EURESCOM-EUROPEAN INSTITUTE FOR RESEARCH AND STRATEGIC STUDIES IN TELECOMMUNICATIONS GMBH</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-208184fb25d928d1ebf1c4a7299df3d8-516a93a3cf1894e77d4216bd5f1a41b8">
+            <akt:full-name>UWE HERZOG</akt:full-name>
+            <akt:has-telephone-number>+49-622-1989132</akt:has-telephone-number>
+            <akt:has-fax-number>+49-622-1989209</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-1d882206e85800e5bd631670de302172"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10179660">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Wireless sensor networks for the protection of critical infrastructures</akt:has-title>
+    <akt:has-goals>The goal of WSAN4CIP is to substantially advance the technology of Wireless Sensor and Actuator Networks (WSANs) beyond the current state of the art and to apply this technology to the Protection of Critical Infrastructures. 
+ 
+In particular, the WSAN4CIP project will apply these advanced wireless and sensor network developments to the management of power generation and distribution infrastructure management systems, which is one of the most demanding applications for wireless infrastructure, to demonstrate the appropriateness and effectiveness of the WSAN4CIP project results. 
+ 
+The project will contribute to making networked information and process control systems much more secure and resilient. The highly distributed nature of Wireless Sensor and Actuator Networks (WSANs) boosts their ability to survive malicious attacks as well as accidental and operational failures. It makes them dependable in critical situations, when information is needed to prevent further damage to Critical Infrastructures (CIs). 
+ 
+As WSANs are inexpensive to deploy and self-organizing it is both practical and efficient to consider an emergency extension of the WSAN as a first reaction to CI problems. The WSAN4CIP project will show how exploiting these features make WSAN an ideal mechanism to improve situation awareness of managing tools for critical infrastructures. 
+ 
+A main challenge of the WSAN4CIP project is that the current state-of-the-art technology for WSANs is not sufficiently dependable for CI use. The WSAN4CIP project will: 
+- Design new sensor node protection mechanisms to improve their dependability 
+- Develop innovative dependable networking approaches for WSANs 
+- Create dependable services to run on top of WSANs that ensure a controlled degradation of information in case of failures rather than total management system failure. 
+ 
+The project will also develop design methodologies, and define an open interface to ensure interoperability with existing CI management applications.</akt:has-goals>
+    <akts:has-pretty-name>WSAN4CIP</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-01-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2011-12-31">
+                    <akts:year-of>2011</akts:year-of>
+                    <akts:month-of>12</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-ELM"/>
+225186#4020996  EURO#2775000  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-1d882206e85800e5bd631670de302172">
+            <akts:has-pretty-name>EURESCOM-EUROPEAN INSTITUTE FOR RESEARCH AND STRATEGIC STUDIES IN TELECOMMUNICATIONS GMBH</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-208184fb25d928d1ebf1c4a7299df3d8-516a93a3cf1894e77d4216bd5f1a41b8">
+            <akt:full-name>UWE HERZOG</akt:full-name>
+            <akt:has-telephone-number>+49-622-1989132</akt:has-telephone-number>
+            <akt:has-fax-number>+49-622-1989209</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-1d882206e85800e5bd631670de302172"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10145279">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Subjectivity and selfhood in the arabic and latin traditions</akt:has-title>
+    <akt:has-goals>The overall aim of the SSALT project is to throw light on the incubation of modern notions of the self and moral agency in the thought of the ancient world, their adoption and adaptation in the European and Arabic middle- ages, and finally their transformation in the early modern period. This aim is approached through the twin paths of Arabic and Latin thought, both of which were in equal measure heir to the legacies of Greek rationalism and Hebrew monotheism.
+While most of the progress made so far in the scholarship has concentrated on Latin scholasticism, a more equally weighted investigation between the Arabic and Latin traditions can not only serve to bring to light much material that is of contemporary philosophical and ethical interest, but will also bring about a deeper understanding and appreciation of the Greek and Hebrew notions of selfhood and moral agency that form the bedrock of our culture.</akt:has-goals>
+    <akts:has-pretty-name>SSALT</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-01-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2012-12-31">
+                    <akts:year-of>2012</akts:year-of>
+                    <akts:month-of>12</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-SCI"/>
+203767#750000  EURO#750000  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-72eece72c6144146b139dcb93da50c0a">
+            <akts:has-pretty-name>JYVASKYLAN YLIOPISTO</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-4d5242d62a5ec07c144ee534c009fa67-72e65c3cebfb173f62cc0b5533764dc7">
+            <akt:full-name>Petri KARONEN (Professor)</akt:full-name>
+            <akt:has-telephone-number>+358-142601259</akt:has-telephone-number>
+            <akt:has-fax-number>+358-142601251</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-72eece72c6144146b139dcb93da50c0a"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-10145225">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Encoded Cellular Synthesis of Unnatural Biopolymers</akt:has-title>
+    <akt:has-goals>We are building a parallel and independent (orthogonal) translational machinery for the encoded biosynthesis of unnatural polymers in living cells. The orthogonal translation system has many potential applications beyond those possible with the natural translation system: I propose to use it: 1) To expand the chemical scope of monomers that can be polymerized by the ribosome in living cells, allowing the incorporation of monomers with unnatural backbones into proteins; 2) To increase the efficiency of in vivo unnatural amino acid mutagenesis via amber suppression, so that no truncated protein is produced and multi-site incorporation of unnatural amino acids is possible; 3) To create probes of protein function for use in vivo; 4) To free numerous codons for simultaneous encoding of multiple distinct unnatural monomers, and to experimentally explore alternate genetic codes; 5) To explore the evolution of encoded unnatural polymers toward new cellular functions.</akt:has-goals>
+    <akts:has-pretty-name>ECSUB</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-01-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>01</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2013-12-31">
+                    <akts:year-of>2013</akts:year-of>
+                    <akts:month-of>12</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-SCI"/>
+200583#1782918  EURO#1782918  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-a5f6a96266b0fe7ed7d7bb5f7caca698">
+            <akts:has-pretty-name>MEDICAL RESEARCH COUNCIL</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-ac189623a6ef9efd2bcd7c2ec53b7d64-a4a11a8692627d5f9b0e86f7d20477bc">
+            <akt:full-name>Elizabeth CUTLER (Ms.)</akt:full-name>
+            <akt:has-telephone-number>+44-01223402357</akt:has-telephone-number>
+            <akt:has-fax-number>+44-01223452515</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-a5f6a96266b0fe7ed7d7bb5f7caca698"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-9303803">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Development of low stress no distortion welding for industrial applications</akt:has-title>
+    <akt:has-goals>Current methods of fabrication involving welding usually result in significant welding distortion problems. Thin walled structures are particularly susceptible in the automotive, shipbuilding and aerospace industries. The cost and time required correcting for distortions can be significant, (for example in Europe annual estimates are in excess of 100M). This results in reduced competitiveness and the creation of uneconomic designs, which are produced to compensate for anticipated distortions. Low Stress N o Distortion (LSND) welding is currently a laboratory-based technique for eliminating buckling distortions and reducing tensile residual stresses. It involves local cooling behind the welding torch restricting shrinkage of the weld.
+The benefits of using L SND include; elimination of rework, reduced fabrication costs, improved joint properties, lower residual stresses, increased manufacturability of lightweight components and a reduction in scrap and recycling requirements. Although highly advantageous, LSN D has not been fully exploited, due to practical difficulties associated with process parameter optimisation and shielding of the cooling gas. The objective of this project is to conduct further research in LSND welding with the help of a research Fellow from China. The Fellow will conduct fundamental scientific research to address issues associated with industrialisation of the LSND technique. The project will involve training the Fellow in aspects related to the simulation of the welding process where there is local cooling from CO2 gas.
+The Fellow will also be trained in aspects of advanced welding equipment prototype manufacture by developing components of an industrial LSND device. The Fellow will also develop a novel shield for preventing cooling gases from contaminating the weld. LSND is already being conducted in the Third country by the Fellow and as such the host institution will develop new skills in LSND welding as a result of this Fellowship.</akt:has-goals>
+    <akts:has-pretty-name>LSND-WELD</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-04-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>04</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2010-03-31">
+                    <akts:year-of>2010</akts:year-of>
+                    <akts:month-of>03</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-ITT"/>
+980044#0  EURO#45500  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-68564703b45f1e3676d6ea480183ac04">
+            <akts:has-pretty-name>BEIJING AERONAUTICAL MANUFACTURING TECHNOLOGY RESEARCH INSTITUTE (BAMTRI)</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-49f3b31097507eba48e4737af59f7d1f-fb3412774d1a91a8dff50d071275e090">
+            <akt:full-name>Guo DELUN (Prof.)</akt:full-name>
+            <akt:has-telephone-number>+86-10-85701345</akt:has-telephone-number>
+            <akt:has-fax-number>+86-10-85701836</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-68564703b45f1e3676d6ea480183ac04"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://cordis.rkbexplorer.com/id/project-9303803">
+    <rdf:type rdf:resource="&akt;Project" />
+    <akt:has-title>Development of low stress no distortion welding for industrial applications</akt:has-title>
+    <akt:has-goals>Current methods of fabrication involving welding usually result in significant welding distortion problems. Thin walled structures are particularly susceptible in the automotive, shipbuilding and aerospace industries. The cost and time required correcting for distortions can be significant, (for example in Europe annual estimates are in excess of 100M). This results in reduced competitiveness and the creation of uneconomic designs, which are produced to compensate for anticipated distortions. Low Stress N o Distortion (LSND) welding is currently a laboratory-based technique for eliminating buckling distortions and reducing tensile residual stresses. It involves local cooling behind the welding torch restricting shrinkage of the weld.
+The benefits of using L SND include; elimination of rework, reduced fabrication costs, improved joint properties, lower residual stresses, increased manufacturability of lightweight components and a reduction in scrap and recycling requirements. Although highly advantageous, LSN D has not been fully exploited, due to practical difficulties associated with process parameter optimisation and shielding of the cooling gas. The objective of this project is to conduct further research in LSND welding with the help of a research Fellow from China. The Fellow will conduct fundamental scientific research to address issues associated with industrialisation of the LSND technique. The project will involve training the Fellow in aspects related to the simulation of the welding process where there is local cooling from CO2 gas.
+The Fellow will also be trained in aspects of advanced welding equipment prototype manufacture by developing components of an industrial LSND device. The Fellow will also develop a novel shield for preventing cooling gases from contaminating the weld. LSND is already being conducted in the Third country by the Fellow and as such the host institution will develop new skills in LSND welding as a result of this Fellowship.</akt:has-goals>
+    <akts:has-pretty-name>LSND-WELD</akts:has-pretty-name>
+    <akts:has-time-interval>
+        <akts:Time-Interval>
+            <akts:begins-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2009-04-01">
+                    <akts:year-of>2009</akts:year-of>
+                    <akts:month-of>04</akts:month-of>
+                    <akts:day-of>01</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:begins-at-time-point>
+            <akts:ends-at-time-point>
+                <akts:Calendar-Date rdf:about="&akt;2010-03-31">
+                    <akts:year-of>2010</akts:year-of>
+                    <akts:month-of>03</akts:month-of>
+                    <akts:day-of>31</akts:day-of>
+                </akts:Calendar-Date>
+            </akts:ends-at-time-point>
+        </akts:Time-Interval>
+    </akts:has-time-interval>
+    <akt:addresses-generic-area-of-interest rdf:resource="http://cordis.rkbexplorer.com/id/interest-ITT"/>
+980044#0  EURO#45500  EURO     <akt:has-leading-organization>
+        <akt:Organization rdf:about="http://cordis.rkbexplorer.com/id/organization-68564703b45f1e3676d6ea480183ac04">
+            <akts:has-pretty-name>BEIJING AERONAUTICAL MANUFACTURING TECHNOLOGY RESEARCH INSTITUTE (BAMTRI)</akts:has-pretty-name>
+        </akt:Organization>
+    </akt:has-leading-organization>
+    <akt:has-project-leader>
+        <akt:Person rdf:about="http://cordis.rkbexplorer.com/id/person-49f3b31097507eba48e4737af59f7d1f-fb3412774d1a91a8dff50d071275e090">
+            <akt:full-name>Guo DELUN (Prof.)</akt:full-name>
+            <akt:has-telephone-number>+86-10-85701345</akt:has-telephone-number>
+            <akt:has-fax-number>+86-10-85701836</akt:has-fax-number>
+            <akt:has-affiliation-to 
+			rdf:resource="http://cordis.rkbexplorer.com/id/organization-68564703b45f1e3676d6ea480183ac04"/>
+        </akt:Person>
+    </akt:has-project-leader>
+  </rdf:Description>
+
+</rdf:RDF>
+
+<!--  Canonisation Information: Fri, 13 Apr 2012 23:02:21 +0100
+8 URI(s) were substituted from file rdf/new-cordis-projects-2009.rdf to file rdf/new-cordis-projects-2009.rdf-canon
+-->

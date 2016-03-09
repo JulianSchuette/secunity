@@ -30,7 +30,7 @@ public class Institution {
 		HashMap<String, String> data = new HashMap<String, String>();
 
 		//get all attributes of an institution from triple store
-    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(institution, (String) null, (String) null, true);
+    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(TripleStore.getInstance().toEntity(institution), (String) null, (String) null, true);
     	while (res.hasNext()) {
     		Statement stmt = res.next();
     		IRI p = stmt.getPredicate();
@@ -55,14 +55,14 @@ public class Institution {
     @Consumes("application/json; charset=UTF-8")
 	public Response createInstitution(@PathParam("institution") String institution, Map<String, String> data) {
     	// Check if there is already an institution with that name in db. If true, return error:
-    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Institution"), false);
+    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("akt:Organization"), false);
     	if (results.hasNext()) {
     		return Response.status(Response.Status.CONFLICT).entity("institution already exist").build();
     	}
     	
     	//Otherwise, create an institution with that name and create triples of the form
     	// <institution> <key> <value>
-    	TripleStore.getInstance().addTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Institution"), false);
+    	TripleStore.getInstance().addTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("akt:Organization"), false);
     	for (String predicate:data.keySet()) {
 			String object = data.get(predicate);
 			System.out.println(institution + " " + predicate + " " + object);
