@@ -19,7 +19,7 @@ $("#addInstForm").submit(function(e){
     });
 
     //Validate data
-    var has_name = data['akts:has-name'];
+    var has_name = data['akts:has-pretty-name'];
     if (!has_name) {
     	//TODO Display proper error message
         console.log("Name missing");
@@ -47,26 +47,26 @@ $("#addInstForm").submit(function(e){
 
 /* get list of institutes and add to frontend */ //TODO retrieve subset, triggered by scrollspy
 getInstitutes(function(data) {
-	  $.each(data.entity, function(k, v) {
+      $.each(data.entity, function(k, v) {
 	    // create institute card in frontend
 	    getInstitute(v, function(data) {
 		    $('#instTable').append('\
 			  			<div class="mdl-cell mdl-cell--4-col">\
 	                        <div class="mdl-card mdl-shadow--4dp">\
 	                            <div class="mdl-card__title">\
-	                                <h2 class="mdl-card__title-text">'+data.entity[v]['su:has-name']+'</h2>\
+	                                <h2 class="mdl-card__title-text">'+decodeURIComponent(data.entity[v]['su:has_short_name'])+'</h2>\
 	                            </div>\
 	                            <div class="mdl-card__media">\
 	                                <img src="skytower.jpg" alt="" style="padding:10px;" border="0" height="157" width="173">\
 	                              </div>\
 	                              <div class="mdl-card__supporting-text">\
-	                                '+data.entity[v]['akts:has-pretty-name']+'\
+	                                '+decodeURIComponent(data.entity[v]['su:has_full_name'])+'\
 	                              </div>\
 	                              <div class="mdl-card__supporting-text">\
-	                                '+data.entity[v]['akt:has-city-or-village']+'\
+	                                '+decodeURIComponent(data.entity[v]['su:address_country'])+'\
 	                              </div>\
 	                              <div class="mdl-card__supporting-text">\
-	                                '+data.entity[v]['has_description']+'\
+	                                '+decodeURIComponent(data.entity[v]['su:address_city'])+'\
 	                              </div>\
 	                            <div class="mdl-card__menu">\
 	                                <button data-upgraded=",MaterialButton,MaterialRipple" id="show-dialog" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">\

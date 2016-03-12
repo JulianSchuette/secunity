@@ -10,7 +10,7 @@ webAppDirName = 'src/webapp'
 	
 jar {
     manifest {
-        attributes 'Implementation-Title': 'Gradle Quickstart',
+        attributes 'Implementation-Title': 'SecUnity REST API',
                    'Implementation-Version': version
     }
 }
@@ -32,11 +32,11 @@ dependencies {
 	compile 'org.glassfish.jersey.media:jersey-media-json-jackson:2.22.1'
     	
 	//OpenRDF Sesame
-  	compile 'org.openrdf.sesame:sesame-repository-http:4.1.0'
-  	compile 'org.openrdf.sesame:sesame-repository-manager:4.1.0'
-  	compile 'org.openrdf.sesame:sesame-repository-sparql:4.1.0'
-  	compile 'org.openrdf.sesame:sesame-repository-api:4.1.0'
-	compile 'org.openrdf.sesame:sesame-rio-rdfxml:4.1.0'
+  	compile 'org.openrdf.sesame:sesame-repository-http:4.1.1'
+  	compile 'org.openrdf.sesame:sesame-repository-manager:4.1.'
+  	compile 'org.openrdf.sesame:sesame-repository-sparql:4.1.1'
+  	compile 'org.openrdf.sesame:sesame-repository-api:4.1.1'
+	compile 'org.openrdf.sesame:sesame-rio-rdfxml:4.1.1'
     
     //JUnit tests
     testCompile group: 'junit', name: 'junit', version: '4.+'
