@@ -9,3 +9,13 @@ The web application consists of several parts:
 * __TripleStore__: A triplestore database stores data in RDF format
 * __Backend__: A REST API backend provides CRUD operations on the triplestore. Users are authenticated via OAuth2.0/OpenID Connect tokens
 * __Frontend__: The frontend is a HTML/JS application which operates against the REST API and provides forms to users to enter data for CRUD operations. In a later step, the frontend will provide various advanced ways to search and browse through data in the backend.
+
+# Building
+
+* Make sure you have installed [docker](https://docs.docker.com/machine/get-started/) and [docker-compose](https://docs.docker.com/compose/).
+
+* Build REST backend: `webapp/secunity-backend/gradlew -p webapp/secunity-backend/ war`
+
+* Start all three microservices: `docker-compose up`
+
+* Open <http://localhost/index.html>
