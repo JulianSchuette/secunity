@@ -1,11 +1,15 @@
 package de.fhg.aisec.secunity.db;
 
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.List;
 
 import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
@@ -13,6 +17,19 @@ import org.openrdf.model.Namespace;
 import org.openrdf.model.Statement;
 import org.openrdf.model.Value;
 import org.openrdf.model.ValueFactory;
+import org.openrdf.query.BindingSet;
+import org.openrdf.query.BooleanQuery;
+import org.openrdf.query.GraphQuery;
+import org.openrdf.query.Query;
+import org.openrdf.query.TupleQuery;
+import org.openrdf.query.resultio.BooleanQueryResultFormat;
+import org.openrdf.query.resultio.BooleanQueryResultWriter;
+import org.openrdf.query.resultio.BooleanQueryResultWriterRegistry;
+import org.openrdf.query.resultio.QueryResultIO;
+import org.openrdf.query.resultio.TupleQueryResultFormat;
+import org.openrdf.query.resultio.TupleQueryResultWriter;
+import org.openrdf.query.resultio.TupleQueryResultWriterRegistry;
+import org.openrdf.query.resultio.helpers.QueryResultCollector;
 import org.openrdf.repository.Repository;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
@@ -22,6 +39,8 @@ import org.openrdf.repository.manager.RemoteRepositoryManager;
 import org.openrdf.repository.sail.config.SailRepositoryConfig;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
+import org.openrdf.rio.RDFWriter;
+import org.openrdf.rio.Rio;
 import org.openrdf.sail.inferencer.fc.config.DirectTypeHierarchyInferencerConfig;
 import org.openrdf.sail.memory.config.MemoryStoreConfig;
 
@@ -73,7 +92,7 @@ public class TripleStore {
 		repo.getConnection().setNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
 		repo.getConnection().setNamespace("akt", "http://www.aktors.org/ontology/portal#");
 		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
-		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
+		repo.getConnection().setNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		repo.getConnection().setNamespace("su", NAMESPACE);
 		
 		if (!repoExists) {
@@ -169,6 +188,15 @@ public class TripleStore {
 		return null;
 	}
 	
+	public List<String> getNamespaces() {
+		List<String> results = new ArrayList<String>();
+		RepositoryResult<Namespace> ns = repo.getConnection().getNamespaces();
+		for (Namespace n: Iterations.asList(ns)) {
+			results.add(n.getName());
+		}
+		return results;
+	}
+	
 	public String getNamespace(String prefix) {
 		return repo.getConnection().getNamespace(prefix);
 	}
@@ -185,6 +213,47 @@ public class TripleStore {
 		}
 	}
 	
+	/**
+	 * Queries triple store and returns results.
+	 * 
+	 * Depending on the type of the query the results will be as follows:
+	 * 
+	 * TupleQuery:		JSON
+	 * GraphQuery:		N-Triples
+	 * BooleanQuery:	Plain text
+	 * 
+	 * @param query
+	 * @param includeInferred
+	 * @return
+	 */
+	public List<BindingSet> querySPARQLTuples(String query, boolean includeInferred) {
+		Query q = repo.getConnection().prepareQuery(query);
+		q.setIncludeInferred(includeInferred);
+		
+		if (!(q instanceof TupleQuery)) {
+			throw new IllegalArgumentException("SPARQL query is not a tuple query.");
+		}
+		
+		QueryResultCollector resultCollector = new QueryResultCollector();			
+		((TupleQuery) q).evaluate(resultCollector);
+		return resultCollector.getBindingSets();
+	}
+	
+	public String querySPARQLBoolean(String query, boolean includeInferred) {
+		Query q = repo.getConnection().prepareQuery(query);
+		q.setIncludeInferred(includeInferred);
+		ByteArrayOutputStream response = new ByteArrayOutputStream();
+		
+		if (!(q instanceof BooleanQuery)) {
+			throw new IllegalArgumentException("SPARQL query is not a boolean query.");
+		} 
+		
+		final BooleanQueryResultWriterRegistry r = BooleanQueryResultWriterRegistry.getInstance();
+		final BooleanQueryResultWriter writer = QueryResultIO.createBooleanWriter(BooleanQueryResultFormat.TEXT, response);
+		writer.handleBoolean(((BooleanQuery) q).evaluate());
+		return response.toString();
+	}
+
 	/**
 	 * Get triples from store which match given subject, predicate, object.
 	 * 
@@ -249,7 +318,13 @@ public class TripleStore {
 	public void addTriple(String subject, String predicate, String object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
 		IRI s = f.createIRI(NAMESPACE, subject);
-		IRI p = f.createIRI(NAMESPACE, predicate);
+		IRI p = null;
+		if (predicate.contains(":") && !predicate.contains("://")) {
+			String[] parts = predicate.split(":");
+			p = f.createIRI(getNamespace(parts[0]), parts[1]);
+		} else {
+			p = f.createIRI(NAMESPACE, predicate);
+		}
 		Statement stmt;
 		if (isLiteral) {
 			Literal o = f.createLiteral(object);
