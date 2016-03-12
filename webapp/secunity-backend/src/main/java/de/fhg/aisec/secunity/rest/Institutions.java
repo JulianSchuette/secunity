@@ -10,12 +10,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
-import org.openrdf.model.IRI;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
-import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.query.BindingSet;
-import org.openrdf.repository.RepositoryResult;
 
 import de.fhg.aisec.secunity.db.TripleStore;
 
@@ -41,7 +36,7 @@ public class Institutions {
 		sb.append("  ?s rdf:type su:Organisation ;");
 		sb.append("} ");
 		sb.append("ORDER BY DESC(?s)");
-		if (limit != null) {
+		if (limit != null) {	// Enforce max. limit even when not given
 			sb.append(" LIMIT " + limit);
 		}		
 		String query = sb.toString();
@@ -52,22 +47,6 @@ public class Institutions {
 			data.add(institution);
 		}
 		
-//		//get all institutions from triple store
-//    	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(null,  RDF.TYPE, TripleStore.getInstance().toEntity("su:Organisation"), false);
-//    	while (res.hasNext()) {
-//    		Statement stmt = res.next();
-//    		Resource s = stmt.getSubject();
-//    		if (s instanceof IRI) {
-//    			String prefix = TripleStore.getInstance().getPrefix(((IRI)s).getNamespace());
-//    			if (prefix !=null) {
-//    				data.add(prefix + ":" + ((IRI)s).getLocalName());
-//    			} else {
-//    				data.add(s.stringValue());
-//    			}
-//    		} else {
-//    			throw new RuntimeException("Unsupported type " + s.getClass());
-//    		}
-//    	}
     	return Response.ok().entity(Entity.json(data)).build();    	
 	}
 }

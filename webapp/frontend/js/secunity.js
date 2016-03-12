@@ -105,7 +105,7 @@ function getInstitute(inst, done, fail) {
 
 /* List institutes */
 function getInstitutes(done, fail) {
-  $.getJSON( apiInstitutes )
+  $.getJSON( apiInstitutes + '?limit=10' )
     .done(function( data ) {
     	if (done)
     		done(data);

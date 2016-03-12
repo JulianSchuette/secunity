@@ -35,8 +35,9 @@ public class Institution {
     		Statement stmt = res.next();
     		IRI p = stmt.getPredicate();
     		Value o = stmt.getObject();
-    		//Replace namespaces by prefixes
+    		//TODO Switch to SPARQL query
     		
+    		//Replace namespaces by prefixes    		
     		String predicate = TripleStore.getInstance().getPrefix(p.getNamespace())!=null?
     							TripleStore.getInstance().getPrefix(p.getNamespace()) + ":" + p.getLocalName():
     							p.stringValue();    		
