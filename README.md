@@ -16,6 +16,8 @@ The web application consists of several parts:
 
 * Build REST backend: `webapp/secunity-backend/gradlew -p webapp/secunity-backend/ war`
 
+* Create initial dataset `cd tools;python csv2rdf_fp7organizations.py > ../webapp/secunity-backend/src/main/resources/datasets/fp7organizations.ttl`
+
 * Start all three microservices: `docker-compose up`
 
 * Open <http://localhost/index.html>
