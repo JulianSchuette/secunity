@@ -19,7 +19,7 @@ public class Institutions {
 
     @GET
     @Produces("application/json; charset=UTF-8")
-	public Response getInstitutions(@QueryParam(value = "limit") String limit) {
+	public Response getInstitutions(@QueryParam(value = "limit") String limit, @QueryParam(value = "offset") String offset) {
 		HashSet<String> data = new HashSet<String>();
 
 		// build SPARQL query
@@ -35,12 +35,14 @@ public class Institutions {
 		sb.append("WHERE { ");
 		sb.append("  ?s rdf:type su:Organisation ;");
 		sb.append("} ");
-		sb.append("ORDER BY DESC(?s)");
+		sb.append("ORDER BY ASC(?s)");
 		if (limit != null) {	// Enforce max. limit even when not given
 			sb.append(" LIMIT " + limit);
-		}		
+		}
+		if (limit != null && offset !=null) {
+			sb.append(" OFFSET " + offset);
+		}
 		String query = sb.toString();
-		System.out.println(query);
 		List<BindingSet> res = TripleStore.getInstance().querySPARQLTuples(query, false);
 		for (BindingSet bs:res) {
 			String institution = bs.getValue("s").stringValue();
