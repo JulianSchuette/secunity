@@ -29,84 +29,7 @@
       lat_map = Math.log(Math.tan( (90 + lat) * PI / 360)) / (PI / 180);
       lat_map = lat_map * 20037508.34 / 180;
 --></script>
-
-    <!-- <script type="text/javascript" src="js/OpenLayers2.7.js"></script> -->
-
-    <script type="text/javascript"><!--
-        var map;
-        var POI;
-    
-        function get_osm_url (bounds) {
-          var res = this.map.getResolution();
-          var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
-          var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
-          var z = this.map.getZoom();
-          var path =  z + "/" + x + "/" + y ;
-          var url = this.url;
-          if (url instanceof Array) {
-            url = this.selectUrl(path, url);
-          }
-          return url + path;
-        }
-
-        function get_poi_url (bounds) {
-          //bounds = this.adjustBounds(bounds);
-          var res = this.map.getResolution();
-          var z = this.map.getZoom();
-          var path = "?z=" + z
-          + "&l=" + getLeft(bounds)
-          + "&t=" + getTop(bounds)
-          + "&r=" + getRight(bounds)
-          + "&b=" + getBottom(bounds)
-          + "&f=" + features;
-          var url = "http://localhost/secunity-backend/api/pois/";
-          return url + path;
-        }
-
-        function init() {
-          OpenLayers.Util.onImageLoadErrorColor= "#E7FFC2";
-          
-          OpenLayers.Util.onImageLoadError = function() {
-            this.style.backgroundColor= null;
-            this.src = "img/my404t.png";
-          }
-
-          //45.93591170013053,13.524035160395303
-          //51.08285790895948,26.004501207203198
-          //5770084.965702645,1505488.7073159674
-          //6635963.434452645,2894807.8323159674
-          var map = new OpenLayers.Map("demoMap");
-          var layerm1 = new OpenLayers.Layer.OSM();
-          // // layerm1 = new OpenLayers.Layer.TMS( "Freemap Slovakia", "http://tiles.freemap.sk/A/", {
-          // //   type:'png',
-          // //   getURL: get_osm_url
-          // // });
-          var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-          var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-          var position       = new OpenLayers.LonLat(13.41,52.52).transform( fromProjection, toProjection);
-          var zoom           = 5; 
-          layerm1.setVisibility(true);
-
-
-          map = new OpenLayers.Map("demoMap");
-          map.addLayer(new OpenLayers.Layer.OSM());
-          map.zoomToMaxExtent();
-
-          // create POI layer
-          POI = new OpenLayers.Layer.MarkerGrid( "POI",
-            {
-               type:'txt',
-               getURL: get_poi_url,
-               attribution: "SecUnity Data",
-               buffer: 0
-             });
-           POI.setIsBaseLayer(false);
-           POI.setVisibility(true);
-          map.addLayers([layerm1, POI]);
-          map.setCenter(position, zoom );
-        }
-        // -->
-    </script>    
+ 
     <style>
         /* Nice highlighted button */
         #view-source {
@@ -166,7 +89,7 @@
           <div class="android-navigation-container subMenu">
             <nav class="android-navigation mdl-navigation">
               <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_institutions">Institutions</a>
-              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="research_map.html">Research Map</a> <!-- Jump to section map -->
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_map">Research Map</a> <!-- Jump to section map -->
               <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_topics">Topics</a>
               <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_persons">Persons</a>
             </nav>
@@ -203,27 +126,10 @@
       <div class="android-content mdl-layout__content">
         <a name="top"></a>
         <div class="android-be-together-section mdl-typography--text-center">
-          <div class="logo-font slogan">secunity.</div>
-          <div class="logo-font sub-slogan">security research for europe</div>
+          <div class="logo-font slogan">Research map</div>
+          <div class="logo-font sub-slogan">placeholder for the researching map</div>
         </div>
 
-          <div class="section_institutions" style="padding-left:30px">
-            <h2>Institutions</h2>
-            <div style="position:relative;top:-65px;left:240px">
-                 <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
-                    <i class="material-icons">add</i>
-                 </button>
-            </div>
-
-            <div id="instTable" class="mdl-grid">
-
-            </div>
-          </div>
-
-          <div class="section_map" style="padding-left:30px">
-              <h2>Research Map</h2>
-              <div id="demoMap" style="height:500px;width:500px"></div>
-          </div>
 
           <div class="mdl-mega-footer--bottom-section">
             <a class="android-link android-link-menu mdl-typography--font-light" id="developers-dropdown">
@@ -240,65 +146,6 @@
         </footer>
       </div>
     </div>
-
-
-    <!-- Modal dialog for adding institution -->
-    <dialog id="modal_add_inst">
-        <div class="modal demo-card-wide mdl-card">
-            <div class="mdl-card__title">
-                <h2 class="mdl-card__title-text">Add Institution</h2>
-            </div>
-            <div class="mdl-card__supporting-text">
-                <p>Add a research institution.</p>
-                <form id="addInstForm" action="#">
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has-name" maxlength="20">
-                        <label class="mdl-textfield__label" for="instName">Short name</label>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instName" name="akts:has-pretty-name">
-                        <label class="mdl-textfield__label" for="instName">Complete Name</label>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instSuperInst" name="akts:sub-unit-of-organization-unit">
-                        <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-city-or-village">
-                        <label class="mdl-textfield__label" for="instCounty">City</label>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-country">
-                        <label class="mdl-textfield__label" for="instCounty">Country</label>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instWeb" name="akts:has-web-address">
-                        <label class="mdl-textfield__label" for="instWeb">Website</label>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <textarea class="mdl-textfield__input" type="text" rows= "5" id="instDescription" name="has_description"></textarea>
-                        <label class="mdl-textfield__label" for="instDescription">Description ...</label>
-                    </div>
-                    <div class="element file mdl-file mdl-js-file mdl-file--floating-label">
-                        <input type="file" name="avatar[profileImage]" id="profileImage" multiple="multiple" accept=".jpg,.gif,.png,.svg">
-                        <label class="mdl-file__label" for="profileImage">Title Image</label>
-                        <span class="mdl-textfield__error">You can upload only </span>
-                    </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instTopics" name="works_on_topics">
-                        <label class="mdl-textfield__label" for="instTopics">Topics (comma separated)</label>
-                    </div>
-                </form>
-            </div>
-            <div class="mdl-card__actions mdl-card--border">
-                <a class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" onclick="$('#addInstForm').submit();">
-                    Add Institution
-                </a>
-                <a class="mdl-button mdl-js-button mdl-js-ripple-effect close">
-                    Cancel
-                </a>
-            </div>
-    </dialog>
 
    <script src="js/material.min.js"></script>
    <script src="js/material.components.ext.min.js"></script>
