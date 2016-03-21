@@ -48,7 +48,7 @@ public class Institutions {
 			String institution = bs.getValue("s").stringValue();
 			data.add(institution);
 		}
-		
-    	return Response.ok().entity(Entity.json(data)).build();    	
+
+    	return Response.ok().entity(Entity.json(data)).build();
 	}
 }
