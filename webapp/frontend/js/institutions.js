@@ -24,9 +24,10 @@ function writeAddressName(latLng) {
         writeAddressName(userLatLng);
 
         var myOptions = {
-          zoom : 4,
+          zoom : 5,
           center : userLatLng,
-          mapTypeId : google.maps.MapTypeId.ROADMAP
+          mapTypeId : google.maps.MapTypeId.ROADMAP,
+          minZoom: 2
         };
         // Draw the map
         mapObject = new google.maps.Map(document.getElementById("map"), myOptions);
@@ -36,12 +37,13 @@ function writeAddressName(latLng) {
 
       function geolocationError(positionError) {
         document.getElementById("error").innerHTML += "Error: " + positionError.message + "<br />";
-        var center = new google.maps.LatLng(37.4419, -122.1419);
+        var center = new google.maps.LatLng(47.5, 19.05);
 
         mapObject = new google.maps.Map(document.getElementById('map'), {
-          zoom: 3,
+          zoom: 5,
           center: center,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          minZoom: 2
         });
         initialize();
       }
