@@ -174,9 +174,9 @@ a img{
   position: relative;
   height: 800px;
   width: auto;
-  background-color: #f3f3f3;
-  background: url('images/slide01.jpg') center 30% no-repeat;
-  background-size: cover;
+  background-color: #f5f5f5!important;
+  background: url('images/slide01.jpg') center 50% no-repeat;
+  background-size: 500px;
 }
 
 .logo-font {

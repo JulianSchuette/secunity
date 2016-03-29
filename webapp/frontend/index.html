@@ -19,95 +19,6 @@
     <script type="text/javascript" src="js/dialog-polyfill.js"></script>
     <script type="text/javascript" src="js/underscore-min.js"></script>
     
-    <script type='text/javascript'><!--
-      var lon = 19.35;
-      var lat = 48.55;
-      var zoom = 12;
-      var features = "2:3;1:1;1:2;2:4;5:17;5:18;3:8;3:9;3:10";
-      //
-      var PI = 3.14159265358979323846;
-      lon_map = lon * 20037508.34 / 180;
-      lat_map = Math.log(Math.tan( (90 + lat) * PI / 360)) / (PI / 180);
-      lat_map = lat_map * 20037508.34 / 180;
---></script>
-
-    <!-- <script type="text/javascript" src="js/OpenLayers2.7.js"></script> -->
-
-    <script type="text/javascript"><!--
-        var map;
-        var POI;
-    
-        function get_osm_url (bounds) {
-          var res = this.map.getResolution();
-          var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
-          var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
-          var z = this.map.getZoom();
-          var path =  z + "/" + x + "/" + y ;
-          var url = this.url;
-          if (url instanceof Array) {
-            url = this.selectUrl(path, url);
-          }
-          return url + path;
-        }
-
-        function get_poi_url (bounds) {
-          //bounds = this.adjustBounds(bounds);
-          var res = this.map.getResolution();
-          var z = this.map.getZoom();
-          var path = "?z=" + z
-          + "&l=" + getLeft(bounds)
-          + "&t=" + getTop(bounds)
-          + "&r=" + getRight(bounds)
-          + "&b=" + getBottom(bounds)
-          + "&f=" + features;
-          var url = "http://localhost/secunity-backend/api/pois/";
-          return url + path;
-        }
-
-        function init() {
-          OpenLayers.Util.onImageLoadErrorColor= "#E7FFC2";
-          
-          OpenLayers.Util.onImageLoadError = function() {
-            this.style.backgroundColor= null;
-            this.src = "img/my404t.png";
-          }
-
-          //45.93591170013053,13.524035160395303
-          //51.08285790895948,26.004501207203198
-          //5770084.965702645,1505488.7073159674
-          //6635963.434452645,2894807.8323159674
-          var map = new OpenLayers.Map("demoMap");
-          var layerm1 = new OpenLayers.Layer.OSM();
-          // // layerm1 = new OpenLayers.Layer.TMS( "Freemap Slovakia", "http://tiles.freemap.sk/A/", {
-          // //   type:'png',
-          // //   getURL: get_osm_url
-          // // });
-          var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
-          var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
-          var position       = new OpenLayers.LonLat(13.41,52.52).transform( fromProjection, toProjection);
-          var zoom           = 5; 
-          layerm1.setVisibility(true);
-
-
-          map = new OpenLayers.Map("demoMap");
-          map.addLayer(new OpenLayers.Layer.OSM());
-          map.zoomToMaxExtent();
-
-          // create POI layer
-          POI = new OpenLayers.Layer.MarkerGrid( "POI",
-            {
-               type:'txt',
-               getURL: get_poi_url,
-               attribution: "SecUnity Data",
-               buffer: 0
-             });
-           POI.setIsBaseLayer(false);
-           POI.setVisibility(true);
-          map.addLayers([layerm1, POI]);
-          map.setCenter(position, zoom );
-        }
-        // -->
-    </script>    
     <style>
         /* Nice highlighted button */
         #view-source {
@@ -145,7 +56,7 @@
         }
     </style>
   </head>
-  <body onload="init()">
+  <body>
     <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
       <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
@@ -217,11 +128,6 @@
             <div id="instTable" class="mdl-grid">
 
             </div>
-          </div>
-
-          <div class="section_map" style="padding-left:30px">
-              <h2>Research Map</h2>
-              <div id="demoMap" style="height:500px;width:500px"></div>
           </div>
 
           <div class="mdl-mega-footer--bottom-section">
@@ -356,11 +262,8 @@
        }
       },200));
     </script>
-    <script type="text/javascript" src="js/OpenLayers.js"></script>
     <script type="text/javascript" src="js/jquery.smint.js"></script>
     <script type="text/javascript" src="js/secunity.js"></script>
-    <script type="text/javascript" src="js/MarkerGrid.js"></script>
-    <script type="text/javascript" src="js/MarkerTile.js"></script>
     <script type="text/javascript" src="js/bounds.js"></script>
   </body>
 </html>
