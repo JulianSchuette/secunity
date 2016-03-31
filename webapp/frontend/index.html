@@ -220,16 +220,20 @@
           dialog.close();
         });
     </script>
+    <script type="text/javascript" src="js/jquery.smint.js"></script>
+    <script type="text/javascript" src="js/secunity.js"></script>
+    <script type="text/javascript" src="js/bounds.js"></script>
     <script>
       var pageCount = 0;
       $('.android-content').scroll( _.debounce(function() {
-       if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+100) {
+       if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+20) {
           pageCount++;
           /* get list of institutes and add to frontend */
           getInstitutes(10, pageCount*10, function(data) {
                 $.each(data.entity, function(k, v) {
                   // create institute card in frontend
                   getInstitute(v, function(data) {
+                    
                       $('#instTable').append('\
                                   <div class="mdl-cell mdl-cell--4-col">\
                                       <div class="mdl-card mdl-shadow--4dp">\
@@ -262,8 +266,5 @@
        }
       },200));
     </script>
-    <script type="text/javascript" src="js/jquery.smint.js"></script>
-    <script type="text/javascript" src="js/secunity.js"></script>
-    <script type="text/javascript" src="js/bounds.js"></script>
   </body>
 </html>

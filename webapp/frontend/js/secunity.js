@@ -25,24 +25,19 @@ $("#addInstForm").submit(function(e){
         console.log("Name missing");
     } 
 
-    //Save form data
-    $.ajax({
-        cache: false,
-        url : apiInstitute + "/" + has_name,
-        type: "POST",
-        dataType : "json",
-        contentType: "application/json; charset=UTF-8",
-        data : JSON.stringify(data),
-        context : Form,
-        success : function(callback){
+    // Post data 
+    createInstitute(
+        has_name,
+        data, 
+        function(callback){
             //Where $(this) => context == FORM
-			document.querySelector('#modal_add_inst').close();
-			resetForm($( '#addInstForm' ));
+            document.querySelector('#modal_add_inst').close();
+            resetForm($( '#addInstForm' ));
         },
-        error : function(){
+        function(){
             $(this).html("Error!");
         }
-    });
+        );
 });
 
 
@@ -57,7 +52,7 @@ function resetForm(form) {
 /* 			REST functions	    	  */
 /* ---------------------------------- */
 
-/* Return instititute data */ //TODO return Promise
+/* Return institute data */ //TODO return Promise
 function getInstitute(inst, done, fail) {
   $.getJSON( apiInstitute+"/" + encodeURIComponent(inst))
     .done(function( data ) {
@@ -82,6 +77,22 @@ function getInstitutes(limit, offset, done, fail) {
         	fail(d,textStatus,error);
         else
         	console.log(textStatus + ", " + error);
+    });
+}
+
+/* Create new institute */
+function createInstitute(name, map, success, fail) {
+    //Save form data
+    $.ajax({
+        cache: false,
+        url : apiInstitute + "/" + name,
+        type: "POST",
+        dataType : "json",
+        contentType: "application/json; charset=UTF-8",
+        data : JSON.stringify(data),
+        context : Form,
+        success : success(callback),
+        error : fail()
     });
 }
 
