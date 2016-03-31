@@ -83,11 +83,6 @@ public class TripleStore {
 	    //Connect to repo.
 		repo = new HTTPRepository(url.toString(), repoID);
 		repo.initialize();
-		repo.getConnection().setNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-		repo.getConnection().setNamespace("akt", "http://www.aktors.org/ontology/portal#");
-		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
-		repo.getConnection().setNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		repo.getConnection().setNamespace("su", NAMESPACE);
 
 		if (!repoExists) {
 	    	try {
@@ -125,7 +120,12 @@ public class TripleStore {
 			}
 		}
 
-
+		// setNamespace is super slow for large data sets
+		repo.getConnection().setNamespace("rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#");
+		repo.getConnection().setNamespace("akt", "http://www.aktors.org/ontology/portal#");
+		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
+		repo.getConnection().setNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+		repo.getConnection().setNamespace("su", NAMESPACE);
 	}
 
 	public Repository getRepository() {
