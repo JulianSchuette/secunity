@@ -11,6 +11,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.openrdf.model.IRI;
@@ -50,6 +53,7 @@ public class TripleStore {
 	private static final String NAMESPACE = "http://secunity/";
 	private static TripleStore instance = null;
 	private HTTPRepository repo = null;
+	private boolean initial = true;
 
 	public static TripleStore getInstance() {
 		if (instance == null) {
@@ -96,7 +100,10 @@ public class TripleStore {
 				e.printStackTrace();
 			}
 		}
-
+		if(initial){
+			loadMissingLocationdata();
+			initial = false;
+		}
 		return repo;
 	}
 
@@ -127,6 +134,92 @@ public class TripleStore {
 
 
 	}
+
+	public void loadMissingLocationdata(){
+		HashSet<String> institutions= getInstitutionNames();
+		System.out.println("Number of institutions: " + institutions.size());
+		HashSet<String> instMiss= getLocMissingInstitutions();
+		System.out.println("Number of institutions: " + instMiss.size());
+		Iterator<String> insts = instMiss.iterator();
+		for(int i = 0; i < 3 && insts.hasNext(); i++){
+			String inst = insts.next();
+			HashMap<String, String> institution = getInstitutionsProp(inst);
+
+			for(String key: institution.keySet())
+				System.out.println("Prop: " + key + " Value: " + institution.get(key));
+		}
+	}
+
+	public HashMap<String,String> getInstitutionsProp(String institution){
+		System.out.println("PROP: " + institution);
+		HashMap<String, String> ret = new HashMap<String, String>();
+		StringBuilder sb = getPrefixedStringBuilder();
+		sb.append("SELECT ?s ?p ?o ");
+		sb.append("WHERE { ");
+		sb.append("  ?s ?p ?o .");
+		sb.append("  FILTER (?s = "+replaceNamespace(institution)+" )");
+		sb.append("} ");
+		String query = sb.toString();
+		List<BindingSet> results = querySPARQLTuples(query, false);
+		System.out.println(results.size());
+		System.out.println(query);
+		for(BindingSet bs: results){
+			String prop = bs.getValue("p").stringValue();
+			String valu = bs.getValue("o") == null ? "" : bs.getValue("o").stringValue();
+			ret.put(prop, valu);
+		}
+		return ret;
+	}
+
+	public StringBuilder getPrefixedStringBuilder(){
+		StringBuilder sb = new StringBuilder();
+		for (String ns: TripleStore.getInstance().getNamespaces()) {
+			sb.append("PREFIX ");
+			sb.append(TripleStore.getInstance().getPrefix(ns));
+			sb.append(": <");
+			sb.append(ns);
+			sb.append(">\n");
+		}
+		return sb;
+	}
+
+	public HashSet<String> getInstitutionNames(){
+		HashSet<String> names = new HashSet<String>();
+		StringBuilder sb =  getPrefixedStringBuilder();
+		sb.append("SELECT ?s ?p ?o");
+		sb.append("WHERE { ");
+		sb.append("  ?s ?p ?o .");
+		sb.append("  FILTER (?p = rdf:type ) .");
+		sb.append("  FILTER (?o = su:Organisation ) ");
+		sb.append("} ");
+		sb.append("ORDER BY ASC(?s)");
+		String query = sb.toString();
+		List<BindingSet> results = querySPARQLTuples(query, false);
+		System.out.println(results.size());
+		for(BindingSet bs: results){
+			names.add(bs.getValue("s").stringValue());
+		}
+		return names;
+	}
+	public HashSet<String> getLocMissingInstitutions(){
+		HashSet<String> names = new HashSet<String>();
+		StringBuilder sb =  getPrefixedStringBuilder();
+		sb.append("SELECT ?s ?a ?g");
+		sb.append("WHERE { ");
+		sb.append("  ?s rdf:type su:Organisation .");
+		sb.append("OPTIONAL {?s su:loc_lat ?a} .");
+		sb.append("OPTIONAL {?s su:loc_lng ?g} .");
+		sb.append("FILTER ( ! bound(?a) || ! bound(?g) )");
+		sb.append("} ");
+		sb.append("ORDER BY ASC(?s)");
+		String query = sb.toString();
+		List<BindingSet> results = querySPARQLTuples(query, false);
+		for(BindingSet bs: results){
+			names.add(bs.getValue("s").toString());
+		}
+		return names;
+	}
+
 
 	public Repository getRepository() {
 		return repo;
@@ -232,6 +325,7 @@ public class TripleStore {
 		((TupleQuery) q).evaluate(resultCollector);
 		return resultCollector.getBindingSets();
 	}
+
 
 	public String querySPARQLBoolean(String query, boolean includeInferred) {
 		Query q = repo.getConnection().prepareQuery(query);
