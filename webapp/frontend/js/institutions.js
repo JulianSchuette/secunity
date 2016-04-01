@@ -112,27 +112,24 @@ function initialize() {
 }
 
 function queryInstitutions(){
-  $.getJSON(restURL+ "institutions?limit=1000", function(data){
-    var list = data.entity;
-    for (var key in list) {
-      if (list.hasOwnProperty(key)) {
-        inst = list[key];
-        inst["key"] = key;
-        assertLocation(inst);
-      }
-    }
-  });
-  
+     getInstitutes(100, 0, function(data) {
+        $.each(data.entity, function(k, v) {
+          // Assert location for each institution
+          getInstitute(v, function(inst) {
+            assertLocation(inst.entity[v])
+          });
+        });
+    });  
 }
 
 function assertLocation(institution){
-  if(!institution.hasOwnProperty("loc_lat") || !institution.hasOwnProperty("loc_lng") ){
+  if(!institution.hasOwnProperty("su:loc_lat") || !institution.hasOwnProperty("su:loc_lng") ){
     var address = buildAddressforNominatime(institution);
     geocoder.geocode({'address': buildAddressforGeoCode(institution)}, function(results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         postLocation(institution.key, results[0].geometry.location.lat(), results[0].geometry.location.lng());
         var loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-        drawmarker(mapObject, loc, decodeURIComponent(institution["has_full_name"]));
+        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
       } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
             //console.log('Not successful for the following reason: ' + status);
                 //assertLocation(institution);
@@ -148,22 +145,22 @@ function assertLocation(institution){
         var result = data[0];
         postLocation(institution.key, result.lat, result.lon)
         var loc = new google.maps.LatLng(result.lat, result.lon);
-        drawmarker(mapObject, loc, decodeURIComponent(institution["has_full_name"]));
+        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
       }else{
         console.log("FAILED REQUEST: " + nominatim+buildAddressforNominatime(institution)+"?format=json");
       }
     });
   }else{
-    var loc = new google.maps.LatLng(institution["loc_lat"], institution["loc_lng"]);
-    drawmarker(mapObject, loc, decodeURIComponent(institution["has_full_name"]));
+    var loc = new google.maps.LatLng(institution["su:loc_lat"], institution["su:loc_lng"]);
+    drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
   }
 }
 
 function buildAddressforNominatime(inst){
-  var street = inst["address_street"];
-  var city = inst["address_city"];
-  var country = inst["address_country"];
-  var postalcode = inst["address_postcode"];
+  var street = inst["su:address_street"];
+  var city = inst["su:address_city"];
+  var country = inst["su:address_country"];
+  var postalcode = inst["su:address_postcode"];
   var address = "";
   address += street ? street + ",+" : ""
   address += city ? city + ",+" : ""
@@ -178,10 +175,10 @@ function buildAddressforNominatime(inst){
 }
 
 function buildAddressforGeoCode(inst){
-  var street = inst["address_street"];
-  var city = inst["address_city"];
-  var country = inst["address_country"];
-  var postalcode = inst["address_postcode"];
+  var street = inst["su:address_street"];
+  var city = inst["su:address_city"];
+  var country = inst["su:address_country"];
+  var postalcode = inst["su:address_postcode"];
   var address = "";
   address += street ? street + ",+" : ""
   address += city ? city + ",+" : ""
@@ -195,7 +192,7 @@ function buildAddressforGeoCode(inst){
   return address.replace(replacer2,"");
 
 
-
+  // TODO unreachable code!
   var address = buildAddressforNominatime(inst);
   var replacer = new RegExp("\\+", "g");
   address = address.replace(replacer, " ");
@@ -203,6 +200,9 @@ function buildAddressforGeoCode(inst){
 }
 
 function postLocation(instName, lat, lng){
+  if (!instName)
+    return;
+  
   $.post( restURL+"institution/"+instName+"/latlng?lat="+lat+"&lng="+lng, function( data ) {
           
     });
