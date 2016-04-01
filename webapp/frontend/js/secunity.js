@@ -89,10 +89,10 @@ function createInstitute(name, map, success, fail) {
         type: "POST",
         dataType : "json",
         contentType: "application/json; charset=UTF-8",
-        data : JSON.stringify(data),
-        context : Form,
-        success : success(callback),
-        error : fail()
+        data : JSON.stringify(map),
+        context : document.body,
+        success : success,
+        error : fail
     });
 }
 
