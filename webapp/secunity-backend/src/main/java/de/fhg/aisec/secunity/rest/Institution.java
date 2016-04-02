@@ -2,7 +2,9 @@ package de.fhg.aisec.secunity.rest;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -22,6 +24,9 @@ import org.openrdf.model.Value;
 import org.openrdf.model.vocabulary.RDF;
 import org.openrdf.repository.RepositoryResult;
 
+import de.fhg.aisec.secunity.db.EntityTriple;
+import de.fhg.aisec.secunity.db.StringLiteralTriple;
+import de.fhg.aisec.secunity.db.Triple;
 import de.fhg.aisec.secunity.db.TripleStore;
 
 @Path("institution/{institution}")
@@ -32,9 +37,7 @@ public class Institution {
 	public Response getInstitution(@PathParam("institution") String institution) {
 		HashMap<String, String> data = new HashMap<String, String>();
 		//get all attributes of an institution from triple store
-		System.out.println("Entity: " + TripleStore.getInstance().toEntity(institution));
     	RepositoryResult<Statement> res = TripleStore.getInstance().getTriples(TripleStore.getInstance().toEntity(institution), (String) null, (String) null, true);
-    	System.out.println("Has elements: " + res.hasNext());
     	while (res.hasNext()) {
     		Statement stmt = res.next();
     		IRI p = stmt.getPredicate();
@@ -47,12 +50,13 @@ public class Institution {
     							p.stringValue();
     		String object;
     		if (o instanceof Literal) {
-    			object = ((Literal) o).getLabel();
+    			object = ((Literal) o).getLabel().replace("\"","");
     		} else if (o instanceof IRI) {
     			object = TripleStore.getInstance().getPrefix(((IRI) o).getNamespace()) + ":" + ((IRI) o).getLocalName();
     		} else {
     			throw new RuntimeException("Unexpected type " + o.getClass());
     		}
+    		System.out.println(predicate + " - " + object);
     		data.put(predicate, object);
     	}
     	HashMap<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
@@ -60,24 +64,40 @@ public class Institution {
     	return Response.ok().entity(Entity.json(result)).build();
 	}
 
+    /**
+     * Creates a new institution.
+     * 
+     * The institution must be identified by a unique name. If the name already exists, this method will return 409 (CONFLICT).
+     * The institution must have a non-empty map of attributes. If the map is missing, this method will return 500 (server-side error).
+     * 
+     * It is expected, but not required, that the map contains (at least) the following keys:
+     * 
+     * su:has_name							(short name)
+     * akts:has-pretty-name					(full name)
+     * akts:sub-unit-of-organization-unit	(name of super organization, if any)
+     * 
+     * 
+     * 
+     * @param institution
+     * @param data
+     * @return
+     */
     @POST
     @Consumes("application/json; charset=UTF-8")
 	public Response createInstitution(@PathParam("institution") String institution, Map<String, String> data) {
     	// Check if there is already an institution with that name in db. If true, return error:
-    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("su:Organisation"), false);
+    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Organisation"), false);
     	if (results.hasNext()) {
     		return Response.status(Response.Status.CONFLICT).entity("institution already exist").build();
     	}
 
     	//Otherwise, create an institution with that name and create triples of the form
     	// <institution> <key> <value>
-    	TripleStore.getInstance().addTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("su:Organisation"), false);
-    	for (String predicate:data.keySet()) {
-			String object = data.get(predicate);
-			System.out.println(institution + " " + predicate + " " + object);
-			TripleStore.getInstance().addTriple(institution, predicate, object, true);
-    	}
-
+    	List<Triple> triples = new ArrayList<Triple>(data.size());
+    	triples.add(new EntityTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Organisation")));
+    	data.keySet().parallelStream().forEach(predicate -> { triples.add(new StringLiteralTriple(institution, TripleStore.getInstance().toEntity(predicate), data.get(predicate))); });
+    	TripleStore.getInstance().addTriples(triples);
+    	
     	// Return ok
     	return Response.ok().build();
 	}

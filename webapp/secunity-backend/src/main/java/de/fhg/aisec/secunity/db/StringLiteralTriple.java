@@ -1,37 +1,36 @@
 package de.fhg.aisec.secunity.db;
 
-public class StringLiteralTriple {
-	String subject;
-	String predicate;
-	String object;
+import org.openrdf.model.IRI;
+import org.openrdf.model.Value;
+import org.openrdf.sail.memory.model.MemLiteral;
 
-	public StringLiteralTriple(String subject, String predicate, String object) {
-		this.subject = subject;
-		this.predicate = predicate;
-		this.object = object;
+public class StringLiteralTriple extends Triple {
+
+	public StringLiteralTriple(String subject, IRI predicate, String object) {
+		super(subject, predicate, new MemLiteral(null, object));
 	}
 	
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
 
-	public void setPredicate(String predicate) {
+	public void setPredicate(IRI predicate) {
 		this.predicate = predicate;
 	}
 
 	public void setObject(String object) {
-		this.object = object;
+		this.object = new MemLiteral(this, object);
 	}
 	
 	public String getSubject() {
 		return subject;
 	}
 	
-	public String getPredicate() {
+	public IRI getPredicate() {
 		return predicate;
 	}
 	
-	public String getObject() {
+	public Value getObject() {
 		return object;
 	}
 

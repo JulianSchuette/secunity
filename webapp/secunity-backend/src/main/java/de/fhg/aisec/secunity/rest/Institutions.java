@@ -43,6 +43,7 @@ public class Institutions {
 			sb.append(" OFFSET " + offset);
 		}
 		String query = sb.toString();
+		System.out.println(query);
 		List<BindingSet> res = TripleStore.getInstance().querySPARQLTuples(query, false);
 		for (BindingSet bs:res) {
 			String institution = bs.getValue("s").stringValue();

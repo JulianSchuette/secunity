@@ -1,8 +1,6 @@
 package de.fhg.aisec.secunity.db;
 
 
-import info.aduna.iteration.Iterations;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +11,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.openrdf.IsolationLevels;
 import org.openrdf.model.IRI;
 import org.openrdf.model.Literal;
 import org.openrdf.model.Namespace;
@@ -29,6 +28,7 @@ import org.openrdf.query.resultio.BooleanQueryResultWriterRegistry;
 import org.openrdf.query.resultio.QueryResultIO;
 import org.openrdf.query.resultio.helpers.QueryResultCollector;
 import org.openrdf.repository.Repository;
+import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.RepositoryException;
 import org.openrdf.repository.RepositoryResult;
 import org.openrdf.repository.config.RepositoryConfig;
@@ -39,6 +39,8 @@ import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.inferencer.fc.config.DirectTypeHierarchyInferencerConfig;
 import org.openrdf.sail.memory.config.MemoryStoreConfig;
+
+import info.aduna.iteration.Iterations;
 
 /**
  * Facade for triple store backend.
@@ -285,8 +287,42 @@ public class TripleStore {
 		ValueFactory f = repo.getValueFactory();
 		IRI p = predicate!=null?f.createIRI(NAMESPACE, predicate):null;
 		Value o = object!=null?f.createLiteral(object):null;
-		return repo.getConnection().getStatements(subject, p, o, includeInferred);
+		RepositoryResult<Statement> stmts = repo.getConnection().getStatements(subject, p, o, includeInferred);
+		repo.getConnection().close();
+		return stmts;
 	}
+	
+	/**
+	 * Adds multiple triples in a single transaction. Use this method if you need to add more than one statement at a time.
+	 * 
+	 * @param triples
+	 */
+	public void addTriples(List<Triple> triples) {
+		RepositoryConnection con = repo.getConnection();
+		con.begin(IsolationLevels.READ_UNCOMMITTED);
+		triples.parallelStream().forEach(triple -> {
+			System.out.println("Committing " + triple.getSubject() + " - " + triple.getPredicate() + " - " + triple.getObject());
+			addTriple(triple.getSubject(), triple.getPredicate(), triple.getObject());
+		});
+		con.commit();
+		System.out.println("Committed");
+		con.close();
+	}
+	
+	public void addTriple(String subject, Value predicate, Value object) {
+		if (predicate instanceof IRI && object instanceof IRI) {
+			addTriple(subject, (IRI) predicate, (IRI) object, false);
+		} else if (predicate instanceof IRI && object instanceof Literal) {
+			addTriple(subject, (IRI) predicate, ((Literal) object).stringValue(), true);			
+		} else if (predicate instanceof Literal && object instanceof Literal) {
+			addTriple(subject, predicate.stringValue(), object.stringValue(), true);
+		} else if (predicate instanceof IRI && object instanceof IRI) {
+			addTriple(subject, predicate, object);
+		} else {
+			System.out.println("PLONK");
+		}
+	}
+
 
 	public void addTriple(String subject, IRI predicate, IRI object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
@@ -308,7 +344,7 @@ public class TripleStore {
 		}
 		repo.getConnection().add(stmt);
 	}
-
+	
 	public void addTriple(String subject, String predicate, String object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
 		IRI s = f.createIRI(NAMESPACE, subject);
