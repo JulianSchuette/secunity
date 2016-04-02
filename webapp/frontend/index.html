@@ -154,31 +154,31 @@
             <div class="mdl-card__supporting-text">
                 <p>Add a research institution.</p>
                 <form id="addInstForm" action="#">
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has-name" maxlength="20">
+                    <div class="mdl-textfield mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has_short_name" maxlength="20">
                         <label class="mdl-textfield__label" for="instName">Short name</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instName" name="akts:has-pretty-name">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has_full_name">
                         <label class="mdl-textfield__label" for="instName">Complete Name</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instSuperInst" name="akts:sub-unit-of-organization-unit">
                         <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-city-or-village">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_city">
                         <label class="mdl-textfield__label" for="instCounty">City</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-country">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_country">
                         <label class="mdl-textfield__label" for="instCounty">Country</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instWeb" name="akts:has-web-address">
                         <label class="mdl-textfield__label" for="instWeb">Website</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <textarea class="mdl-textfield__input" type="text" rows= "5" id="instDescription" name="has_description"></textarea>
                         <label class="mdl-textfield__label" for="instDescription">Description ...</label>
                     </div>
@@ -187,7 +187,7 @@
                         <label class="mdl-file__label" for="profileImage">Title Image</label>
                         <span class="mdl-textfield__error">You can upload only </span>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instTopics" name="works_on_topics">
                         <label class="mdl-textfield__label" for="instTopics">Topics (comma separated)</label>
                     </div>
@@ -222,7 +222,7 @@
     <script type="text/javascript" src="js/secunity.js"></script>
     <script type="text/javascript" src="js/bounds.js"></script>
     <script>
-      var pageCount = 0;
+      var pageCount = -1;
 
       $('.android-content').scroll( _.debounce(function() {
        if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+20) {
