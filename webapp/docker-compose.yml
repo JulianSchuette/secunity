@@ -1,11 +1,12 @@
 version: '2'
 services:
   database:
+    build:
+      context: database
     expose:
      - "8080"
     volumes:
      - ./database/data:/data
-    image: opensesame
   rest_api:
     build:
       context: secunity-backend/
