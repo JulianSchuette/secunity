@@ -1,6 +1,6 @@
-var apiInstitutes = "http://localhost:8080/secunity-backend/api/institutions";
-var apiInstitute = "http://localhost:8080/secunity-backend/api/institution";
-var apiPerson = "http://localhost:8080/secunity-backend/api/person/";
+var apiInstitutes = "http://"+window.location.hostname+":8080/secunity-backend/api/institutions";
+var apiInstitute = "http://"+window.location.hostname+":8080/secunity-backend/api/institution";
+var apiPerson = "http://"+window.location.hostname+":8080/secunity-backend/api/person/";
 
 
 

@@ -3,8 +3,8 @@ services:
   database:
     build:
       context: database
-    expose:
-     - "8080"
+    port:
+     - "8080:8080"
     volumes:
      - ./database/data:/data
   rest_api:
