@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -31,6 +34,7 @@ import de.fhg.aisec.secunity.db.TripleStore;
 
 @Path("institution/{institution}")
 public class Institution {
+	private static final Logger log = Logger.getLogger(Institution.class.getName());
 
     @GET
     @Produces("application/json; charset=UTF-8")
@@ -96,7 +100,11 @@ public class Institution {
     	List<Triple> triples = new ArrayList<Triple>(data.size());
     	triples.add(new EntityTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Organisation")));
     	data.keySet().parallelStream().forEach(predicate -> { triples.add(new StringLiteralTriple(institution, TripleStore.getInstance().toEntity(predicate), data.get(predicate))); });
-    	TripleStore.getInstance().addTriples(triples);
+    	CompletableFuture<Boolean> result = TripleStore.getInstance().addTriples(triples);
+    	
+    	result.thenAccept(success -> {
+        	log.log(Level.INFO, "Adding successful: " + success);
+    	});
     	
     	// Return ok
     	return Response.ok().build();
@@ -115,7 +123,7 @@ public class Institution {
     	}catch(UnsupportedEncodingException uee){
 
     	}
-    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("su:Organisation"), false);
+    	RepositoryResult<Statement> results = TripleStore.getInstance().getTriples(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Organisation"), false);
     	if (results.hasNext()) {
     		System.out.println("INSTITUTION EXISTS");
     	}else{

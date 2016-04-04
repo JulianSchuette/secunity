@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,9 +55,10 @@ import info.aduna.iteration.Iterations;
 public class TripleStore {
 	private static final Logger log = Logger.getLogger(TripleStore.class.getName());
 	public static final String DB_URL = "http://db:8080/openrdf-sesame"; 
-	private static final String NAMESPACE = "http://secunity/";
+	public static final String DEFAULT_NS = "http://secunity/";
 	private static TripleStore instance = null;
 	private static HTTPRepository repo = null;
+	private ExecutorService executor = Executors.newFixedThreadPool(10);
 
 	public static TripleStore getInstance() {
 		if (instance == null) {
@@ -109,19 +113,19 @@ public class TripleStore {
 		while (en.hasMoreElements()) {
 			URL url = en.nextElement();
 			for (File f: new File(url.getPath()).listFiles()) {
-					try {
+				try {
 					String ext = f.getName().substring(f.getName().lastIndexOf(".")+1);
 					switch (ext.toLowerCase()) {
 					case "ttl":
-						repo.getConnection().add(f, NAMESPACE, RDFFormat.TURTLE);
+						repo.getConnection().add(f, DEFAULT_NS, RDFFormat.TURTLE);
 						break;
 					case "rdf":
-						repo.getConnection().add(f, NAMESPACE, RDFFormat.RDFXML);
+						repo.getConnection().add(f, DEFAULT_NS, RDFFormat.RDFXML);
 						break;
 					case "n3":
-						repo.getConnection().add(f, NAMESPACE, RDFFormat.N3);
+						repo.getConnection().add(f, DEFAULT_NS, RDFFormat.N3);
 					}
-				} catch (RDFParseException | RepositoryException | IOException e) {
+				} catch (Throwable e) {
 					log.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
@@ -132,7 +136,7 @@ public class TripleStore {
 		repo.getConnection().setNamespace("akt", "http://www.aktors.org/ontology/portal#");
 		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
 		repo.getConnection().setNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
-		repo.getConnection().setNamespace("su", NAMESPACE);
+		repo.getConnection().setNamespace("su", DEFAULT_NS);
 	}
 
 	public Repository getRepository() {
@@ -209,7 +213,7 @@ public class TripleStore {
 			String[] parts = literal.split(":");
 			return f.createIRI(repo.getConnection().getNamespace(parts[0]), parts[1]);
 		} else if (!literal.contains("://")) {
-			return f.createIRI(NAMESPACE, literal);
+			return f.createIRI(DEFAULT_NS, literal);
 		} else {
 			return f.createIRI(literal);
 		}
@@ -270,28 +274,28 @@ public class TripleStore {
 	 */
 	public RepositoryResult<Statement> getTriples(String subject, String predicate, String object, boolean includeInferred) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = subject!=null?f.createIRI(NAMESPACE, subject):null;
-		IRI p = predicate!=null?f.createIRI(NAMESPACE, predicate):null;
+		IRI s = subject!=null?f.createIRI(DEFAULT_NS, subject):null;
+		IRI p = predicate!=null?f.createIRI(DEFAULT_NS, predicate):null;
 		Value o = object!=null?f.createLiteral(object):null;
 		return repo.getConnection().getStatements(s, p, o, includeInferred);
 	}
 
 	public RepositoryResult<Statement> getTriples(String subject, IRI predicate, String object, boolean includeInferred) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = subject!=null?f.createIRI(NAMESPACE, subject):null;
+		IRI s = subject!=null?f.createIRI(DEFAULT_NS, subject):null;
 		Value o = object!=null?f.createLiteral(object):null;
 		return repo.getConnection().getStatements(s, predicate, o, includeInferred);
 	}
 
 	public RepositoryResult<Statement> getTriples(String subject, IRI predicate, IRI object, boolean includeInferred) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = subject!=null?f.createIRI(NAMESPACE, subject):null;
+		IRI s = subject!=null?f.createIRI(DEFAULT_NS, subject):null;
 		return repo.getConnection().getStatements(s, predicate, object, includeInferred);
 	}
 
 	public RepositoryResult<Statement> getTriples(IRI subject, String predicate, String object, boolean includeInferred) {
 		ValueFactory f = repo.getValueFactory();
-		IRI p = predicate!=null?f.createIRI(NAMESPACE, predicate):null;
+		IRI p = predicate!=null?f.createIRI(DEFAULT_NS, predicate):null;
 		Value o = object!=null?f.createLiteral(object):null;
 		RepositoryResult<Statement> stmts = repo.getConnection().getStatements(subject, p, o, includeInferred);
 		repo.getConnection().close();
@@ -302,17 +306,28 @@ public class TripleStore {
 	 * Adds multiple triples in a single transaction. Use this method if you need to add more than one statement at a time.
 	 * 
 	 * @param triples
+	 * @return 
 	 */
-	public void addTriples(List<Triple> triples) {
-		RepositoryConnection con = repo.getConnection();
-		con.begin(IsolationLevels.READ_UNCOMMITTED);
-		triples.parallelStream().forEach(triple -> {
-			log.fine("Committing " + triple.getSubject() + " - " + triple.getPredicate() + " - " + triple.getObject());
-			addTriple(triple.getSubject(), triple.getPredicate(), triple.getObject());
-		});
-		con.commit();
-		log.fine("Committed");
-		con.close();
+	public CompletableFuture<Boolean> addTriples(List<Triple> triples) {
+		final CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
+			boolean success = true;
+			try {
+				RepositoryConnection con = repo.getConnection();
+				con.begin(IsolationLevels.READ_UNCOMMITTED);
+				triples.parallelStream().forEach(triple -> {
+					log.fine("Committing " + triple.getSubject() + " - " + triple.getPredicate() + " - " + triple.getObject());
+					addTriple(triple.getSubject(), triple.getPredicate(), triple.getObject());
+				});
+				con.commit();
+				log.fine("Committed");
+				con.close();
+			} catch (Throwable t) {
+				success = false;
+				log.log(Level.SEVERE, t.getMessage(), t);
+			}
+		    return success;
+		}, executor);
+		return future;
 	}
 	
 	public void addTriple(String subject, Value predicate, Value object) {
@@ -332,20 +347,20 @@ public class TripleStore {
 
 	public void addTriple(String subject, IRI predicate, IRI object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = f.createIRI(NAMESPACE, subject);
+		IRI s = f.createIRI(DEFAULT_NS, subject);
 		Statement stmt = f.createStatement(s, predicate, object);
 		repo.getConnection().add(stmt);
 	}
 
 	public void addTriple(String subject, IRI predicate, String object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = f.createIRI(NAMESPACE, subject);
+		IRI s = f.createIRI(DEFAULT_NS, subject);
 		Statement stmt;
 		if (isLiteral) {
 			Literal o = f.createLiteral(object);
 			stmt = f.createStatement(s, predicate, o);
 		} else {
-			IRI o = f.createIRI(NAMESPACE, object);
+			IRI o = f.createIRI(DEFAULT_NS, object);
 			stmt = f.createStatement(s, predicate, o);
 		}
 		repo.getConnection().add(stmt);
@@ -353,20 +368,20 @@ public class TripleStore {
 	
 	public void addTriple(String subject, String predicate, String object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = f.createIRI(NAMESPACE, subject);
+		IRI s = f.createIRI(DEFAULT_NS, subject);
 		IRI p = null;
 		if (predicate.contains(":") && !predicate.contains("://")) {
 			String[] parts = predicate.split(":");
 			p = f.createIRI(getNamespace(parts[0]), parts[1]);
 		} else {
-			p = f.createIRI(NAMESPACE, predicate);
+			p = f.createIRI(DEFAULT_NS, predicate);
 		}
 		Statement stmt;
 		if (isLiteral) {
 			Literal o = f.createLiteral(object);
 			stmt = f.createStatement(s, p, o);
 		} else {
-			IRI o = f.createIRI(NAMESPACE, object);
+			IRI o = f.createIRI(DEFAULT_NS, object);
 			stmt = f.createStatement(s, p, o);
 		}
 		repo.getConnection().add(stmt);
@@ -374,8 +389,8 @@ public class TripleStore {
 
 	public void addTripleLiteral(String subject, String predicate, int object) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = f.createIRI(NAMESPACE, subject);
-		IRI p = f.createIRI(NAMESPACE, predicate);
+		IRI s = f.createIRI(DEFAULT_NS, subject);
+		IRI p = f.createIRI(DEFAULT_NS, predicate);
 		Literal o = f.createLiteral(object);
 		Statement stmt = f.createStatement(s, p, o);
 		repo.getConnection().add(stmt);
@@ -383,8 +398,8 @@ public class TripleStore {
 
 	public void addTripleLiteral(String subject, String predicate, Date object) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = f.createIRI(NAMESPACE, subject);
-		IRI p = f.createIRI(NAMESPACE, predicate);
+		IRI s = f.createIRI(DEFAULT_NS, subject);
+		IRI p = f.createIRI(DEFAULT_NS, predicate);
 		Literal o = f.createLiteral(object);
 		Statement stmt = f.createStatement(s, p, o);
 		repo.getConnection().add(stmt);
@@ -392,8 +407,8 @@ public class TripleStore {
 
 	public void addTripleLiteral(String subject, String predicate, boolean object) {
 		ValueFactory f = repo.getValueFactory();
-		IRI s = f.createIRI(NAMESPACE, subject);
-		IRI p = f.createIRI(NAMESPACE, predicate);
+		IRI s = f.createIRI(DEFAULT_NS, subject);
+		IRI p = f.createIRI(DEFAULT_NS, predicate);
 		Literal o = f.createLiteral(object);
 		Statement stmt = f.createStatement(s, p, o);
 		repo.getConnection().add(stmt);

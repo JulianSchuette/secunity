@@ -19,7 +19,7 @@ $("#addInstForm").submit(function(e){
     });
 
     //Validate data
-    var has_name = data['akts:has-pretty-name'];
+    var has_name = data['su:has_full_name'];
     if (!has_name) {
     	//TODO Display proper error message
         console.log("Name missing");
