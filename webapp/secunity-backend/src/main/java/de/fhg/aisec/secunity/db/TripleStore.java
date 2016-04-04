@@ -4,12 +4,13 @@ package de.fhg.aisec.secunity.db;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.openrdf.IsolationLevels;
 import org.openrdf.model.IRI;
@@ -49,18 +50,22 @@ import info.aduna.iteration.Iterations;
  *
  */
 public class TripleStore {
+	private static final Logger log = Logger.getLogger(TripleStore.class.getName());
+	public static final String DB_URL = "http://db:8080/openrdf-sesame"; 
 	private static final String NAMESPACE = "http://secunity/";
 	private static TripleStore instance = null;
-	private HTTPRepository repo = null;
+	private static HTTPRepository repo = null;
 
 	public static TripleStore getInstance() {
 		if (instance == null) {
 			instance = new TripleStore();
 			try {
 				//TODO make URL and dbID configurable
-				instance.connect(new URL("http://localhost:8081/openrdf-sesame"), "secunity");
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				log.info("Creating new DB connection to " + DB_URL);
+				Repository r = instance.connect(new URL(DB_URL), "secunity");
+				log.info("Connection success: " + r.getConnection().isOpen());
+			} catch (Throwable e) {
+				log.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 		return instance;
@@ -78,7 +83,7 @@ public class TripleStore {
 	    boolean repoExists = manager.getRepository(repoID)!=null;
 	    if (!repoExists) {
 	    	//Create repo, if not there
-	    	System.out.println("Creating repository " + repoID);
+	    	log.info("Creating repository " + repoID);
 	    	createRemoteRepository(manager, repoID);
 	    }
 
@@ -90,7 +95,7 @@ public class TripleStore {
 	    	try {
 				loadInitialData();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
 
@@ -98,7 +103,7 @@ public class TripleStore {
 	}
 
 	private void loadInitialData() throws IOException {
-		System.out.println(new File(".").getAbsolutePath());
+		log.info("Importing initial datasets from " + new File(".").getAbsolutePath());
 		Enumeration<URL> en=getClass().getClassLoader().getResources("datasets");
 
 		while (en.hasMoreElements()) {
@@ -117,7 +122,7 @@ public class TripleStore {
 						repo.getConnection().add(f, NAMESPACE, RDFFormat.N3);
 					}
 				} catch (RDFParseException | RepositoryException | IOException e) {
-					e.printStackTrace();
+					log.log(Level.SEVERE, e.getMessage(), e);
 				}
 			}
 		}
@@ -161,6 +166,7 @@ public class TripleStore {
 	    config.setTitle("Secunity repo");
 	    config.validate();
 	    manager.addRepositoryConfig(config);
+	    log.info("Repository created: " + repoID);
 	}
 
 	/**
@@ -301,11 +307,11 @@ public class TripleStore {
 		RepositoryConnection con = repo.getConnection();
 		con.begin(IsolationLevels.READ_UNCOMMITTED);
 		triples.parallelStream().forEach(triple -> {
-			System.out.println("Committing " + triple.getSubject() + " - " + triple.getPredicate() + " - " + triple.getObject());
+			log.fine("Committing " + triple.getSubject() + " - " + triple.getPredicate() + " - " + triple.getObject());
 			addTriple(triple.getSubject(), triple.getPredicate(), triple.getObject());
 		});
 		con.commit();
-		System.out.println("Committed");
+		log.fine("Committed");
 		con.close();
 	}
 	
@@ -319,7 +325,7 @@ public class TripleStore {
 		} else if (predicate instanceof IRI && object instanceof IRI) {
 			addTriple(subject, predicate, object);
 		} else {
-			System.out.println("PLONK");
+			log.warning("Unexpected triplet type " + subject + " - " + predicate + " - " + object);
 		}
 	}
 

@@ -1,17 +1,20 @@
 version: '2'
 services:
   database:
-    ports:
-     - "8081:8080"
+    expose:
+     - "8080"
     volumes:
      - ./database/data:/data
     image: opensesame
-#  rest_api:
-#    volumes: 
-#    - ./secunity-backend/build/libs/secunity-backend-1.0.war:/usr/local/tomcat/webapps/secunity-backend.war
-#    ports:
-#    - "8080:8080"
-#    image: tomcat:8-jre8
+  rest_api:
+    build:
+      context: secunity-backend/
+    volumes: 
+    - ./secunity-backend/build/libs/secunity-backend-1.0.war:/usr/local/tomcat/webapps/secunity.war
+    ports:
+    - "8080:8080"
+    links:
+    - database:db
   frontend:
     image: nginx
     ports:
