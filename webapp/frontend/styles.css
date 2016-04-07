@@ -61,7 +61,7 @@ a img{
 }
 
 
-.android-logo-image {
+.logo-image {
   height: 28px;
   width: 140px;
 }
@@ -165,7 +165,7 @@ a img{
     height: 160px;
   }
 
-    .android-drawer .android-logo-image {
+    .android-drawer {
       position: absolute;
       bottom: 16px;
     }

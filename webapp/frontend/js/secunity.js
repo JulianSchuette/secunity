@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 // So that the hostname will adapt and be correct assuming that both, frontend server and rest-server are running on the same machine
 var hostname = window.location.hostname;
 hostname = "localhost";
 var apiInstitutes = "http://" + hostname + ":8080/secunity-backend/api/institutions";
 var apiInstitute = "http://" + hostname + ":8080/secunity-backend/api/institution";
 var apiPerson = "http://" + hostname + ":8080/secunity-backend/api/person/";
+=======
+var apiInstitutes = "http://"+window.location.hostname+":8080/secunity-backend/api/institutions";
+var apiInstitute = "http://"+window.location.hostname+":8080/secunity-backend/api/institution";
+var apiPerson = "http://"+window.location.hostname+":8080/secunity-backend/api/person/";
+>>>>>>> 62cb5fd341e9d00dcc739d9ae49a5ddb0b836ed9
 
 
 
@@ -22,7 +28,7 @@ $("#addInstForm").submit(function(e){
     });
 
     //Validate data
-    var has_name = data['akts:has-pretty-name'];
+    var has_name = data['su:has_full_name'];
     if (!has_name) {
     	//TODO Display proper error message
         console.log("Name missing");
@@ -92,10 +98,10 @@ function createInstitute(name, map, success, fail) {
         type: "POST",
         dataType : "json",
         contentType: "application/json; charset=UTF-8",
-        data : JSON.stringify(data),
-        context : Form,
-        success : success(callback),
-        error : fail()
+        data : JSON.stringify(map),
+        context : document.body,
+        success : success,
+        error : fail
     });
 }
 

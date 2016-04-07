@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="SecUnity. Security research in Europe.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Secunity</title>
+    <title>secunity.</title>
 
     <!-- Page styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
@@ -61,7 +61,7 @@
 
       <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
         <div class="mdl-layout__header-row">
-          <h3><a href="index.html" class="home-link">SecUnity</a></h3>
+          <h3><a href="index.html" class="home-link">secunity.</a></h3>
           <!-- Add spacer, to align navigation to the right in desktop -->
           <div class="android-header-spacer mdl-layout-spacer"></div>
           <div class="android-search-box mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
@@ -75,14 +75,12 @@
           <!-- Navigation -->
           <div class="android-navigation-container subMenu">
             <nav class="android-navigation mdl-navigation">
-              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="institutions.html">Institutions</a>
-              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="research_map.html">Research Map</a> <!-- Jump to section map -->
-              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_topics">Topics</a>
-              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_persons">Persons</a>
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_institutions">Institutions List</a>
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="institutions.html">Institutions Map</a> <!-- Jump to section map -->
             </nav>
           </div>
           <span class="android-mobile-title mdl-layout-title">
-            <img class="android-logo-image" src="images/android-logo.png">
+            <!-- TODO Here goes the title logo for mobile views -->
           </span>
           <button class="android-more-button mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="more-button">
             <i class="material-icons">more_vert</i>
@@ -98,7 +96,7 @@
 
       <div class="android-drawer mdl-layout__drawer">
         <span class="mdl-layout-title">
-          <img class="android-logo-image" src="images/android-logo-white.png">
+          <!-- TODO Here goes the title logo for medium views -->
         </span>
         <nav class="mdl-navigation">
           <a class="mdl-navigation__link" href="">Getting Started</a>
@@ -156,31 +154,31 @@
             <div class="mdl-card__supporting-text">
                 <p>Add a research institution.</p>
                 <form id="addInstForm" action="#">
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has-name" maxlength="20">
+                    <div class="mdl-textfield mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has_short_name" maxlength="20">
                         <label class="mdl-textfield__label" for="instName">Short name</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instName" name="akts:has-pretty-name">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has_full_name">
                         <label class="mdl-textfield__label" for="instName">Complete Name</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instSuperInst" name="akts:sub-unit-of-organization-unit">
                         <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-city-or-village">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_city">
                         <label class="mdl-textfield__label" for="instCounty">City</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-country">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_country">
                         <label class="mdl-textfield__label" for="instCounty">Country</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instWeb" name="akts:has-web-address">
                         <label class="mdl-textfield__label" for="instWeb">Website</label>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <textarea class="mdl-textfield__input" type="text" rows= "5" id="instDescription" name="has_description"></textarea>
                         <label class="mdl-textfield__label" for="instDescription">Description ...</label>
                     </div>
@@ -189,7 +187,7 @@
                         <label class="mdl-file__label" for="profileImage">Title Image</label>
                         <span class="mdl-textfield__error">You can upload only </span>
                     </div>
-                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instTopics" name="works_on_topics">
                         <label class="mdl-textfield__label" for="instTopics">Topics (comma separated)</label>
                     </div>
@@ -224,16 +222,16 @@
     <script type="text/javascript" src="js/secunity.js"></script>
     <script type="text/javascript" src="js/bounds.js"></script>
     <script>
-      var pageCount = 0;
+      var pageCount = -1;
+
       $('.android-content').scroll( _.debounce(function() {
        if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+20) {
           pageCount++;
           /* get list of institutes and add to frontend */
-          getInstitutes(10, pageCount*10, function(data) {
+          getInstitutes(50, pageCount*50, function(data) {
                 $.each(data.entity, function(k, v) {
                   // create institute card in frontend
                   getInstitute(v, function(data) {
-                    
                       $('#instTable').append('\
                                   <div class="mdl-cell mdl-cell--4-col">\
                                       <div class="mdl-card mdl-shadow--4dp">\
@@ -244,7 +242,7 @@
                                               <img src="skytower.jpg" alt="" style="padding:10px;" border="0" height="157" width="173">\
                                             </div>\
                                             <div class="mdl-card__supporting-text">\
-                                              '+decodeURIComponent(data.entity[v]['su:has_full_name'])+'\
+                                              '+decodeURIComponent(data.entity[v]['su:has_full_name'].replace(/["']/g, ""))+'\
                                             </div>\
                                             <div class="mdl-card__supporting-text">\
                                               '+decodeURIComponent(data.entity[v]['su:address_country'])+'\

@@ -6,14 +6,6 @@ version = '1.0'
 
 // War file name
 war.baseName = 'secunity-backend'
-webAppDirName = 'src/webapp'
-	
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'SecUnity REST API',
-                   'Implementation-Version': version
-    }
-}
 
 repositories {
     mavenCentral()
@@ -54,4 +46,3 @@ uploadArchives {
        }
     }
 }
-

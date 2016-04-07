@@ -10,6 +10,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
+import org.openrdf.model.IRI;
 import org.openrdf.query.BindingSet;
 
 import de.fhg.aisec.secunity.db.TripleStore;
@@ -33,7 +34,7 @@ public class Institutions {
 		}
 		sb.append("SELECT ?s ");
 		sb.append("WHERE { ");
-		sb.append("  ?s rdf:type su:Organisation .");
+		sb.append("  ?s rdf:type <"+TripleStore.DEFAULT_NS+"Organisation> .");
 		sb.append("} ");
 		sb.append("ORDER BY ASC(?s)");
 		if (limit != null) {	// Enforce max. limit even when not given
@@ -43,10 +44,14 @@ public class Institutions {
 			sb.append(" OFFSET " + offset);
 		}
 		String query = sb.toString();
+		System.out.println(query);
 		List<BindingSet> res = TripleStore.getInstance().querySPARQLTuples(query, false);
 		for (BindingSet bs:res) {
-			String institution = bs.getValue("s").stringValue();
-			data.add(institution);
+			if (bs.getValue("s") instanceof IRI) {
+				IRI subjIRI = (IRI) bs.getValue("s");
+				String institution = TripleStore.getInstance().getPrefix(subjIRI.getNamespace()) + ":" + subjIRI.getLocalName();
+				data.add(institution);
+			}
 		}
 		
     	return Response.ok().entity(Entity.json(data)).build();    	
