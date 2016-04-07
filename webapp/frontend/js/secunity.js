@@ -1,17 +1,43 @@
-<<<<<<< HEAD
-// So that the hostname will adapt and be correct assuming that both, frontend server and rest-server are running on the same machine
-var hostname = window.location.hostname;
-hostname = "localhost";
-var apiInstitutes = "http://" + hostname + ":8080/secunity-backend/api/institutions";
-var apiInstitute = "http://" + hostname + ":8080/secunity-backend/api/institution";
-var apiPerson = "http://" + hostname + ":8080/secunity-backend/api/person/";
-=======
-var apiInstitutes = "http://"+window.location.hostname+":8080/secunity-backend/api/institutions";
-var apiInstitute = "http://"+window.location.hostname+":8080/secunity-backend/api/institution";
-var apiPerson = "http://"+window.location.hostname+":8080/secunity-backend/api/person/";
->>>>>>> 62cb5fd341e9d00dcc739d9ae49a5ddb0b836ed9
+
+var apiInstitutes = "http://"+window.location.hostname + ":8080/secunity-backend/api/institutions";
+var apiInstitute = "http://"+window.location.hostname + ":8080/secunity-backend/api/institution";
+var apiPerson = "http://"+window.location.hostname + ":8080/secunity-backend/api/person/";
 
 
+// Add put and delete functions for jQuery
+$.put = function(url, data, callback, type){
+ 
+  if ( $.isFunction(data) ){
+    type = type || callback,
+    callback = data,
+    data = {}
+  }
+ 
+  return $.ajax({
+    url: url,
+    type: 'PUT',
+    success: callback,
+    data: data,
+    contentType: type
+  });
+}
+
+$.delete = function(url, data, callback, type){
+ 
+  if ( $.isFunction(data) ){
+    type = type || callback,
+        callback = data,
+        data = {}
+  }
+ 
+  return $.ajax({
+    url: url,
+    type: 'DELETE',
+    success: callback,
+    data: data,
+    contentType: type
+  });
+}
 
 /* Handle creation of new institution */
 $("#addInstForm").submit(function(e){

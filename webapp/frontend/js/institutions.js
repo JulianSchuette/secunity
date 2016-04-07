@@ -8,6 +8,7 @@ var markerClusterer = null;
 var imageUrl = 'http://chart.apis.google.com/chart?cht=mm&chs=24x32&' +
 	'chco=FFFFFF,008CFF,000000&ext=.png';
 
+
 function writeAddressName(latLng) {
         geocoder.geocode({
           "location": latLng
@@ -124,36 +125,47 @@ function queryInstitutions(){
 
 function assertLocation(institution){
   if(!institution.hasOwnProperty("su:loc_lat") || !institution.hasOwnProperty("su:loc_lng") ){
-    var address = buildAddressforNominatime(institution);
-    geocoder.geocode({'address': buildAddressforGeoCode(institution)}, function(results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        postLocation(institution.key, results[0].geometry.location.lat(), results[0].geometry.location.lng());
-        var loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
-      } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
-            //console.log('Not successful for the following reason: ' + status);
-                //assertLocation(institution);
-          }else{
-            //console.log('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-
-    
-    console.log("REQUEST: " + nominatim+buildAddressforNominatime(institution)+"?format=json");
-    $.getJSON(nominatim+address+"?format=json",function(data){
-      if(data.length){
-        var result = data[0];
-        postLocation(institution.key, result.lat, result.lon)
-        var loc = new google.maps.LatLng(result.lat, result.lon);
-        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
-      }else{
-        console.log("FAILED REQUEST: " + nominatim+buildAddressforNominatime(institution)+"?format=json");
-      }
-    });
+    queryNtimGeocoding(institution, true);
   }else{
     var loc = new google.maps.LatLng(institution["su:loc_lat"], institution["su:loc_lng"]);
     drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
   }
+}
+
+function queryGmapsGeocoding(institution, retry_if_over_limit){
+  geocoder.geocode({'address': buildAddressforGeoCode(institution)}, function(results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        postLocation(institution.key, results[0].geometry.location.lat(), results[0].geometry.location.lng());
+        console.log("Googleresolved");
+        var loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
+        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
+      } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
+            if(retry_if_over_limit){
+              setTimeout(function(){
+                geocoder = new google.maps.Geocoder();
+                queryGmapsGeocoding(institution, true);
+              }, 2000);
+            }
+            console.log("Google: Over query limit");
+          }else{
+            console.log("Google:resolution failed");
+          }
+        });
+}
+
+function queryNtimGeocoding(institution){
+  console.log("REQUEST: " + nominatim+buildAddressforNominatime(institution)+"?format=json");
+    $.getJSON(nominatim+buildAddressforNominatime(institution)+"?format=json",function(data){
+      if(data.length){
+        var result = data[0];
+        postLocation(institution.key, result.lat, result.lon)
+        var loc = new google.maps.LatLng(result.lat, result.lon);
+        console.log("Nominaresolved");
+        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
+      }else{
+        queryGmapsGeocoding(institution);
+      }
+    });
 }
 
 function buildAddressforNominatime(inst){
@@ -190,23 +202,15 @@ function buildAddressforGeoCode(inst){
   var replacer2 = new RegExp("\"","g");
   address = address.replace(replacer1," ");
   return address.replace(replacer2,"");
-
-
-  // TODO unreachable code!
-  var address = buildAddressforNominatime(inst);
-  var replacer = new RegExp("\\+", "g");
-  address = address.replace(replacer, " ");
-  return address;
 }
 
 function postLocation(instName, lat, lng){
   if (!instName)
     return;
+  $.put(restURL+"institution/"+instName, "{su:loc_lat='"+lat+"', su:loc_lng='" + lng + "'}", function(data,code){}, "application/json; charset=UTF-8");
   
-  $.post( restURL+"institution/"+instName+"/latlng?lat="+lat+"&lng="+lng, function( data ) {
-          
-    });
 }
+
 
 
 google.maps.event.addDomListener(window, 'load', geolocateUser);

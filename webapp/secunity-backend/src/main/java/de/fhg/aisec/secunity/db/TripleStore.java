@@ -1,6 +1,8 @@
 package de.fhg.aisec.secunity.db;
 
 
+import info.aduna.iteration.Iterations;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +49,7 @@ import org.openrdf.rio.RDFParseException;
 import org.openrdf.sail.inferencer.fc.config.DirectTypeHierarchyInferencerConfig;
 import org.openrdf.sail.memory.config.MemoryStoreConfig;
 
-import info.aduna.iteration.Iterations;
+import de.fhg.aisec.secunity.rest.Location;
 
 /**
  * Facade for triple store backend.
@@ -57,16 +59,14 @@ import info.aduna.iteration.Iterations;
  */
 public class TripleStore {
 	private static final Logger log = Logger.getLogger(TripleStore.class.getName());
-	public static final String DB_URL = "http://db:8080/openrdf-sesame"; 
+	public static final String DB_URL = "http://localhost:8081/openrdf-sesame";
 	public static final String DEFAULT_NS = "http://secunity/";
+	public static final String REPO_ID = "secunity";
 	private static TripleStore instance = null;
-<<<<<<< HEAD
-	private HTTPRepository repo = null;
-	private boolean initial = true;
-=======
+
 	private static HTTPRepository repo = null;
 	private ExecutorService executor = Executors.newFixedThreadPool(10);
->>>>>>> 62cb5fd341e9d00dcc739d9ae49a5ddb0b836ed9
+	private boolean initial = true;
 
 	public static TripleStore getInstance() {
 		if (instance == null) {
@@ -74,7 +74,7 @@ public class TripleStore {
 			try {
 				//TODO make URL and dbID configurable
 				log.info("Creating new DB connection to " + DB_URL);
-				Repository r = instance.connect(new URL(DB_URL), "secunity");
+				Repository r = instance.connect(new URL(DB_URL), REPO_ID);
 				log.info("Connection success: " + r.getConnection().isOpen());
 			} catch (Throwable e) {
 				log.log(Level.SEVERE, e.getMessage(), e);
@@ -109,7 +109,7 @@ public class TripleStore {
 		repo.getConnection().setNamespace("akts", "http://www.aktors.org/ontology/support#");
 		repo.getConnection().setNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
 		repo.getConnection().setNamespace("su", DEFAULT_NS);
-		
+
 		if (!repoExists) {
 	    	try {
 				loadInitialData();
@@ -151,17 +151,27 @@ public class TripleStore {
 	}
 
 	public void loadMissingLocationdata(){
-		HashSet<String> institutions= getInstitutionNames();
-		System.out.println("Number of institutions: " + institutions.size());
-		HashSet<String> instMiss= getLocMissingInstitutions();
+		System.out.println("MissingLocations");
+//		HashSet<String> institutions= getInstitutionNames();
+//		System.out.println("Number of institutions: " + institutions.size());
+		HashMap<String, HashMap<String,String>> instMiss= getLocMissingInstitutions();
 		System.out.println("Number of institutions: " + instMiss.size());
-		Iterator<String> insts = instMiss.iterator();
-		for(int i = 0; i < 3 && insts.hasNext(); i++){
+		Iterator<String> insts = instMiss.keySet().iterator();
+		for(int i = 0; i < 20 && insts.hasNext(); i++){
 			String inst = insts.next();
-			HashMap<String, String> institution = getInstitutionsProp(inst);
+			System.out.println(inst);
+			// HashMap<String, String> institution = getInstitutionsProp(inst);
+			HashMap<String, String> institution = instMiss.get(inst);
 
 			for(String key: institution.keySet())
 				System.out.println("Prop: " + key + " Value: " + institution.get(key));
+			HashMap<String, String> loc = Location.queryLocation(institution);
+			inst = TripleStore.getInstance().cutOffNamespace(inst);
+			if(loc != null){
+				addTriple(inst, "loc_lat", loc.get("loc_lat"), true);
+		    	addTriple(inst, "loc_lng", loc.get("loc_lng"), true);
+				loc.forEach((k,v) -> System.out.println(k + "->"+ v));
+			}
 		}
 	}
 
@@ -210,18 +220,23 @@ public class TripleStore {
 		sb.append("ORDER BY ASC(?s)");
 		String query = sb.toString();
 		List<BindingSet> results = querySPARQLTuples(query, false);
-		System.out.println(results.size());
 		for(BindingSet bs: results){
 			names.add(bs.getValue("s").stringValue());
 		}
 		return names;
 	}
-	public HashSet<String> getLocMissingInstitutions(){
-		HashSet<String> names = new HashSet<String>();
+	public HashMap<String,HashMap<String, String>> getLocMissingInstitutions(){
+		HashMap<String,HashMap<String, String>> names = new HashMap<String,HashMap<String, String>>();
 		StringBuilder sb =  getPrefixedStringBuilder();
-		sb.append("SELECT ?s ?a ?g");
+		sb.append("SELECT ?s ?a ?g ?st ?ci ?co ?po");
 		sb.append("WHERE { ");
 		sb.append("  ?s rdf:type su:Organisation .");
+
+		sb.append("OPTIONAL {?s su:address_street ?st} .");
+		sb.append("OPTIONAL {?s su:address_city ?ci} .");
+		sb.append("OPTIONAL {?s su:address_country ?co} .");
+		sb.append("OPTIONAL {?s su:address_postcode ?po} .");
+
 		sb.append("OPTIONAL {?s su:loc_lat ?a} .");
 		sb.append("OPTIONAL {?s su:loc_lng ?g} .");
 		sb.append("FILTER ( ! bound(?a) || ! bound(?g) )");
@@ -230,7 +245,17 @@ public class TripleStore {
 		String query = sb.toString();
 		List<BindingSet> results = querySPARQLTuples(query, false);
 		for(BindingSet bs: results){
-			names.add(bs.getValue("s").toString());
+			HashMap<String, String> prop = new HashMap<String,String>();
+			names.put(bs.getValue("s").toString(), prop);
+			if(bs.hasBinding("st"))
+				prop.put("su:address_street", bs.getValue("st").stringValue());
+			if(bs.hasBinding("ci"))
+				prop.put("su:address_city", bs.getValue("ci").stringValue());
+			if(bs.hasBinding("co"))
+				prop.put("su:address_country", bs.getValue("co").stringValue());
+			if(bs.hasBinding("po"))
+				prop.put("su:address_postcode", bs.getValue("po").stringValue());
+
 		}
 		return names;
 	}
@@ -399,12 +424,12 @@ public class TripleStore {
 		repo.getConnection().close();
 		return stmts;
 	}
-	
+
 	/**
 	 * Adds multiple triples in a single transaction. Use this method if you need to add more than one statement at a time.
-	 * 
+	 *
 	 * @param triples
-	 * @return 
+	 * @return
 	 */
 	public CompletableFuture<Boolean> addTriples(List<Triple> triples) {
 		final CompletableFuture<Boolean> future = CompletableFuture.supplyAsync(() -> {
@@ -427,12 +452,12 @@ public class TripleStore {
 		}, executor);
 		return future;
 	}
-	
+
 	public void addTriple(String subject, Value predicate, Value object) {
 		if (predicate instanceof IRI && object instanceof IRI) {
 			addTriple(subject, (IRI) predicate, (IRI) object, false);
 		} else if (predicate instanceof IRI && object instanceof Literal) {
-			addTriple(subject, (IRI) predicate, ((Literal) object).stringValue(), true);			
+			addTriple(subject, (IRI) predicate, ((Literal) object).stringValue(), true);
 		} else if (predicate instanceof Literal && object instanceof Literal) {
 			addTriple(subject, predicate.stringValue(), object.stringValue(), true);
 		} else if (predicate instanceof IRI && object instanceof IRI) {
@@ -463,7 +488,7 @@ public class TripleStore {
 		}
 		repo.getConnection().add(stmt);
 	}
-	
+
 	public void addTriple(String subject, String predicate, String object, boolean isLiteral) {
 		ValueFactory f = repo.getValueFactory();
 		IRI s = f.createIRI(DEFAULT_NS, subject);

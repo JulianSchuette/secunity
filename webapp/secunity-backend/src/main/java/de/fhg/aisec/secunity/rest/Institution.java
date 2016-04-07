@@ -13,10 +13,10 @@ import java.util.logging.Logger;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Response;
 
@@ -60,7 +60,6 @@ public class Institution {
     		} else {
     			throw new RuntimeException("Unexpected type " + o.getClass());
     		}
-    		System.out.println(predicate + " - " + object);
     		data.put(predicate, object);
     	}
     	HashMap<String, Map<String, String>> result = new HashMap<String, Map<String, String>>();
@@ -70,18 +69,18 @@ public class Institution {
 
     /**
      * Creates a new institution.
-     * 
+     *
      * The institution must be identified by a unique name. If the name already exists, this method will return 409 (CONFLICT).
      * The institution must have a non-empty map of attributes. If the map is missing, this method will return 500 (server-side error).
-     * 
+     *
      * It is expected, but not required, that the map contains (at least) the following keys:
-     * 
+     *
      * su:has_name							(short name)
      * akts:has-pretty-name					(full name)
      * akts:sub-unit-of-organization-unit	(name of super organization, if any)
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @param institution
      * @param data
      * @return
@@ -101,20 +100,21 @@ public class Institution {
     	triples.add(new EntityTriple(institution, RDF.TYPE, TripleStore.getInstance().toEntity("Organisation")));
     	data.keySet().parallelStream().forEach(predicate -> { triples.add(new StringLiteralTriple(institution, TripleStore.getInstance().toEntity(predicate), data.get(predicate))); });
     	CompletableFuture<Boolean> result = TripleStore.getInstance().addTriples(triples);
-    	
+
     	result.thenAccept(success -> {
         	log.log(Level.INFO, "Adding successful: " + success);
     	});
-    	
+
     	// Return ok
     	return Response.ok().build();
 	}
 
-    @POST
-    @Path("/latlng")
-    public Response createLongLat(@PathParam("institution") String institution, @QueryParam("lat") String lat,
-    		@QueryParam("lng") String lng){
-    	//institution = institution.replaceAll("\"", "").replaceAll(" ", "%20");
+    @PUT
+    @Consumes("application/json")
+    public Response createLongLat(@PathParam("institution") String institution, Map<String, String> data){
+    	System.out.println("INSERT LATLONG");
+    	String lat = data.get("lat");
+    	String lng = data.get("lng");
     	System.out.println(institution);
     	try{
         	institution = URLEncoder.encode(institution, "UTF-8");

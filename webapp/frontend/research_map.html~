@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="SecUnity. Security research in Europe.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Secunity</title>
+
+    <!-- Page styles -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="css/material.indigo-pink.min.css" /> 
+    <link rel="stylesheet" href="css/material.components.ext.min.css" /> 
+    <link rel="stylesheet" href="css/dialog-polyfill.css">
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/dialog-polyfill.js"></script>
+    <script type="text/javascript" src="js/underscore-min.js"></script>
+    
+    <script type='text/javascript'><!--
+      var lon = 19.35;
+      var lat = 48.55;
+      var zoom = 12;
+      var features = "2:3;1:1;1:2;2:4;5:17;5:18;3:8;3:9;3:10";
+      //
+      var PI = 3.14159265358979323846;
+      lon_map = lon * 20037508.34 / 180;
+      lat_map = Math.log(Math.tan( (90 + lat) * PI / 360)) / (PI / 180);
+      lat_map = lat_map * 20037508.34 / 180;
+--></script>
+
+    <!-- <script type="text/javascript" src="js/OpenLayers2.7.js"></script> -->
+
+    <script type="text/javascript"><!--
+        var map;
+        var POI;
+    
+        function get_osm_url (bounds) {
+          var res = this.map.getResolution();
+          var x = Math.round ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+          var y = Math.round ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+          var z = this.map.getZoom();
+          var path =  z + "/" + x + "/" + y ;
+          var url = this.url;
+          if (url instanceof Array) {
+            url = this.selectUrl(path, url);
+          }
+          return url + path;
+        }
+
+        function get_poi_url (bounds) {
+          //bounds = this.adjustBounds(bounds);
+          var res = this.map.getResolution();
+          var z = this.map.getZoom();
+          var path = "?z=" + z
+          + "&l=" + getLeft(bounds)
+          + "&t=" + getTop(bounds)
+          + "&r=" + getRight(bounds)
+          + "&b=" + getBottom(bounds)
+          + "&f=" + features;
+          var url = "http://localhost/secunity-backend/api/pois/";
+          return url + path;
+        }
+
+        function init() {
+          OpenLayers.Util.onImageLoadErrorColor= "#E7FFC2";
+          
+          OpenLayers.Util.onImageLoadError = function() {
+            this.style.backgroundColor= null;
+            this.src = "img/my404t.png";
+          }
+
+          //45.93591170013053,13.524035160395303
+          //51.08285790895948,26.004501207203198
+          //5770084.965702645,1505488.7073159674
+          //6635963.434452645,2894807.8323159674
+          var map = new OpenLayers.Map("demoMap");
+          var layerm1 = new OpenLayers.Layer.OSM();
+          // // layerm1 = new OpenLayers.Layer.TMS( "Freemap Slovakia", "http://tiles.freemap.sk/A/", {
+          // //   type:'png',
+          // //   getURL: get_osm_url
+          // // });
+          var fromProjection = new OpenLayers.Projection("EPSG:4326");   // Transform from WGS 1984
+          var toProjection   = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+          var position       = new OpenLayers.LonLat(13.41,52.52).transform( fromProjection, toProjection);
+          var zoom           = 5; 
+          layerm1.setVisibility(true);
+
+
+          map = new OpenLayers.Map("demoMap");
+          map.addLayer(new OpenLayers.Layer.OSM());
+          map.zoomToMaxExtent();
+
+          // create POI layer
+          POI = new OpenLayers.Layer.MarkerGrid( "POI",
+            {
+               type:'txt',
+               getURL: get_poi_url,
+               attribution: "SecUnity Data",
+               buffer: 0
+             });
+           POI.setIsBaseLayer(false);
+           POI.setVisibility(true);
+          map.addLayers([layerm1, POI]);
+          map.setCenter(position, zoom );
+        }
+        // -->
+    </script>    
+    <style>
+        /* Nice highlighted button */
+        #view-source {
+          position: fixed;
+          display: block;
+          right: 0;
+          bottom: 0;
+          margin-right: 40px;
+          margin-bottom: 40px;
+          z-index: 900;
+        }
+
+        /* A wide card */
+        .demo-card-wide.mdl-card {
+          width: 512px;
+        }
+        .demo-card-wide > .mdl-card__title {
+          color: #fff;
+          height: 176px;
+          background: url('https://c1.staticflickr.com/9/8189/8137264591_c8121c918f_b.jpg') center / cover;
+        }
+
+        .centered {
+            display: table-cell;
+            text-align: center;
+        }
+
+        .centered > div {
+                  display: inline-block;
+        }
+        div.olControlAttribution, div.olControlScaleLine {
+          font-family: Verdana;
+          font-size: 0.2em;
+          bottom: 3px;
+        }
+    </style>
+  </head>
+  <body onload="init()">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+
+      <div class="android-header mdl-layout__header mdl-layout__header--waterfall">
+        <div class="mdl-layout__header-row">
+          <span class="android-title mdl-layout-title">
+            SecUnity Logo
+          </span>
+          <!-- Add spacer, to align navigation to the right in desktop -->
+          <div class="android-header-spacer mdl-layout-spacer"></div>
+          <div class="android-search-box mdl-textfield mdl-js-textfield mdl-textfield--expandable mdl-textfield--floating-label mdl-textfield--align-right mdl-textfield--full-width">
+            <label class="mdl-button mdl-js-button mdl-button--icon" for="search-field">
+              <i class="material-icons">search</i>
+            </label>
+            <div class="mdl-textfield__expandable-holder">
+              <input class="mdl-textfield__input" type="text" id="search-field">
+            </div>
+          </div>
+          <!-- Navigation -->
+          <div class="android-navigation-container subMenu">
+            <nav class="android-navigation mdl-navigation">
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_institutions">Institutions</a>
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_map">Research Map</a> <!-- Jump to section map -->
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_topics">Topics</a>
+              <a class="mdl-navigation__link mdl-typography--text-uppercase" href="#section_persons">Persons</a>
+            </nav>
+          </div>
+          <span class="android-mobile-title mdl-layout-title">
+            <img class="android-logo-image" src="images/android-logo.png">
+          </span>
+          <button class="android-more-button mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect" id="more-button">
+            <i class="material-icons">more_vert</i>
+          </button>
+
+          <ul class="mdl-menu mdl-js-menu mdl-menu--bottom-right mdl-js-ripple-effect" for="more-button">
+            <li disabled class="mdl-menu__item">Log In</li>
+            <li disabled class="mdl-menu__item">Sign Up</li>
+            <li class="mdl-menu__item">Contact</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="android-drawer mdl-layout__drawer">
+        <span class="mdl-layout-title">
+          <img class="android-logo-image" src="images/android-logo-white.png">
+        </span>
+        <nav class="mdl-navigation">
+          <a class="mdl-navigation__link" href="">Getting Started</a>
+          <a class="mdl-navigation__link" href="">Developer Documentation</a>
+          <div class="android-drawer-separator"></div>
+          <span class="mdl-navigation__link" href="">Versions</span>
+          <a class="mdl-navigation__link" href="">0.2</a>
+          <a class="mdl-navigation__link" href="">0.1</a>
+        </nav>
+      </div>
+
+      <div class="android-content mdl-layout__content">
+        <a name="top"></a>
+        <div class="android-be-together-section mdl-typography--text-center">
+          <div class="logo-font slogan">secunity.</div>
+          <div class="logo-font sub-slogan">security research for europe</div>
+        </div>
+
+          <div class="section_institutions" style="padding-left:30px">
+            <h2>Institutions</h2>
+            <div style="position:relative;top:-65px;left:240px">
+                 <button id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored">
+                    <i class="material-icons">add</i>
+                 </button>
+            </div>
+
+            <div id="instTable" class="mdl-grid">
+
+            </div>
+          </div>
+
+          <div class="section_map" style="padding-left:30px">
+              <h2>Research Map</h2>
+              <div id="demoMap" style="height:500px;width:500px"></div>
+          </div>
+
+          <div class="mdl-mega-footer--bottom-section">
+            <a class="android-link android-link-menu mdl-typography--font-light" id="developers-dropdown">
+              For Contributors
+              <i class="material-icons">arrow_drop_up</i>
+            </a>
+            <ul class="mdl-menu mdl-js-menu mdl-menu--top-left mdl-js-ripple-effect" for="developers-dropdown">
+              <li class="mdl-menu__item">How to contribute</li>
+              <li class="mdl-menu__item">Github project</li>
+            </ul>
+            <a class="android-link mdl-typography--font-light" href="">Privacy Policy</a>
+          </div>
+
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- Modal dialog for adding institution -->
+    <dialog id="modal_add_inst">
+        <div class="modal demo-card-wide mdl-card">
+            <div class="mdl-card__title">
+                <h2 class="mdl-card__title-text">Add Institution</h2>
+            </div>
+            <div class="mdl-card__supporting-text">
+                <p>Add a research institution.</p>
+                <form id="addInstForm" action="#">
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instName" name="su:has-name" maxlength="20">
+                        <label class="mdl-textfield__label" for="instName">Short name</label>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instName" name="akts:has-pretty-name">
+                        <label class="mdl-textfield__label" for="instName">Complete Name</label>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instSuperInst" name="akts:sub-unit-of-organization-unit">
+                        <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-city-or-village">
+                        <label class="mdl-textfield__label" for="instCounty">City</label>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="akts:address-country">
+                        <label class="mdl-textfield__label" for="instCounty">Country</label>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instWeb" name="akts:has-web-address">
+                        <label class="mdl-textfield__label" for="instWeb">Website</label>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <textarea class="mdl-textfield__input" type="text" rows= "5" id="instDescription" name="has_description"></textarea>
+                        <label class="mdl-textfield__label" for="instDescription">Description ...</label>
+                    </div>
+                    <div class="element file mdl-file mdl-js-file mdl-file--floating-label">
+                        <input type="file" name="avatar[profileImage]" id="profileImage" multiple="multiple" accept=".jpg,.gif,.png,.svg">
+                        <label class="mdl-file__label" for="profileImage">Title Image</label>
+                        <span class="mdl-textfield__error">You can upload only </span>
+                    </div>
+                    <div class="mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instTopics" name="works_on_topics">
+                        <label class="mdl-textfield__label" for="instTopics">Topics (comma separated)</label>
+                    </div>
+                </form>
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                <a class="mdl-button mdl-button--raised mdl-button--colored mdl-js-button mdl-js-ripple-effect" onclick="$('#addInstForm').submit();">
+                    Add Institution
+                </a>
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect close">
+                    Cancel
+                </a>
+            </div>
+    </dialog>
+
+   <script src="js/material.min.js"></script>
+   <script src="js/material.components.ext.min.js"></script>
+    <script>
+        var dialog = document.querySelector('#modal_add_inst');
+        var showDialogButton = document.querySelector('#show-dialog');
+        if (! dialog.showModal) {
+          dialogPolyfill.registerDialog(dialog);
+        }
+        showDialogButton.addEventListener('click', function() {
+          dialog.showModal();
+        });
+        dialog.querySelector('.close').addEventListener('click', function() {
+          dialog.close();
+        });
+    </script>
+    <script>
+      var pageCount = 0;
+      $('.android-content').scroll( _.debounce(function() {
+       if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+100) {
+          pageCount++;
+          /* get list of institutes and add to frontend */
+          getInstitutes(10, pageCount*10, function(data) {
+                $.each(data.entity, function(k, v) {
+                  // create institute card in frontend
+                  getInstitute(v, function(data) {
+                      $('#instTable').append('\
+                                  <div class="mdl-cell mdl-cell--4-col">\
+                                      <div class="mdl-card mdl-shadow--4dp">\
+                                          <div class="mdl-card__title">\
+                                              <h2 class="mdl-card__title-text">'+decodeURIComponent(data.entity[v]['su:has_short_name'])+'</h2>\
+                                          </div>\
+                                          <div class="mdl-card__media">\
+                                              <img src="skytower.jpg" alt="" style="padding:10px;" border="0" height="157" width="173">\
+                                            </div>\
+                                            <div class="mdl-card__supporting-text">\
+                                              '+decodeURIComponent(data.entity[v]['su:has_full_name'])+'\
+                                            </div>\
+                                            <div class="mdl-card__supporting-text">\
+                                              '+decodeURIComponent(data.entity[v]['su:address_country'])+'\
+                                            </div>\
+                                            <div class="mdl-card__supporting-text">\
+                                              '+decodeURIComponent(data.entity[v]['su:address_city'])+'\
+                                            </div>\
+                                          <div class="mdl-card__menu">\
+                                              <button data-upgraded=",MaterialButton,MaterialRipple" id="show-dialog" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">\
+                                              <i class="material-icons">edit</i>\
+                                              <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>\
+                                          </div>           \
+                                      </div> \
+                                  </div>');
+                      });
+                });
+          }); //end getInstitutes
+           
+       }
+      },200));
+    </script>
+    <script type="text/javascript" src="js/OpenLayers.js"></script>
+    <script type="text/javascript" src="js/jquery.smint.js"></script>
+    <script type="text/javascript" src="js/secunity.js"></script>
+    <script type="text/javascript" src="js/MarkerGrid.js"></script>
+    <script type="text/javascript" src="js/MarkerTile.js"></script>
+    <script type="text/javascript" src="js/bounds.js"></script>
+  </body>
+</html>
