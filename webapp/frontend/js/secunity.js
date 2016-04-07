@@ -1,6 +1,9 @@
-var apiInstitutes = "http://localhost:8080/secunity-backend/api/institutions";
-var apiInstitute = "http://localhost:8080/secunity-backend/api/institution";
-var apiPerson = "http://localhost:8080/secunity-backend/api/person/";
+// So that the hostname will adapt and be correct assuming that both, frontend server and rest-server are running on the same machine
+var hostname = window.location.hostname;
+hostname = "localhost";
+var apiInstitutes = "http://" + hostname + ":8080/secunity-backend/api/institutions";
+var apiInstitute = "http://" + hostname + ":8080/secunity-backend/api/institution";
+var apiPerson = "http://" + hostname + ":8080/secunity-backend/api/person/";
 
 
 
