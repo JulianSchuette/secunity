@@ -18,7 +18,4 @@ public class SecunityServerListener implements ServletContextListener{
 	public void contextDestroyed(ServletContextEvent sce) {
 
 	}
-
-
-
 }

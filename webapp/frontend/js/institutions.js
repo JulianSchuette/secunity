@@ -113,7 +113,7 @@ function initialize() {
 }
 
 function queryInstitutions(){
-     getInstitutes(100, 0, function(data) {
+     getInstitutes(100, 0, true, function(data) {
         $.each(data.entity, function(k, v) {
           // Assert location for each institution
           getInstitute(v, function(inst) {
@@ -136,7 +136,6 @@ function queryGmapsGeocoding(institution, retry_if_over_limit){
   geocoder.geocode({'address': buildAddressforGeoCode(institution)}, function(results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         postLocation(institution.key, results[0].geometry.location.lat(), results[0].geometry.location.lng());
-        console.log("Googleresolved");
         var loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
         drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
       } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
@@ -160,7 +159,6 @@ function queryNtimGeocoding(institution){
         var result = data[0];
         postLocation(institution.key, result.lat, result.lon)
         var loc = new google.maps.LatLng(result.lat, result.lon);
-        console.log("Nominaresolved");
         drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
       }else{
         queryGmapsGeocoding(institution);

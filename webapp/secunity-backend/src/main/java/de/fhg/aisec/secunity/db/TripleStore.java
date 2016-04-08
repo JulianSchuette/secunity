@@ -62,11 +62,14 @@ public class TripleStore {
 	public static final String DB_URL = "http://localhost:8081/openrdf-sesame";
 	public static final String DEFAULT_NS = "http://secunity/";
 	public static final String REPO_ID = "secunity";
+
+	// How many missing locations should be maximally resolved on start up
+	public static int MAX_LOCATION_RESOLVE = 20;
+
 	private static TripleStore instance = null;
 
 	private static HTTPRepository repo = null;
 	private ExecutorService executor = Executors.newFixedThreadPool(10);
-	private boolean initial = true;
 
 	public static TripleStore getInstance() {
 		if (instance == null) {
@@ -117,10 +120,7 @@ public class TripleStore {
 				log.log(Level.SEVERE, e.getMessage(), e);
 			}
 		}
-		if(initial){
-			loadMissingLocationdata();
-			initial = false;
-		}
+		loadMissingLocationdata();
 		return repo;
 	}
 
@@ -151,27 +151,27 @@ public class TripleStore {
 	}
 
 	public void loadMissingLocationdata(){
-		System.out.println("MissingLocations");
-//		HashSet<String> institutions= getInstitutionNames();
-//		System.out.println("Number of institutions: " + institutions.size());
+		log.info("Resolving missing locations");
 		HashMap<String, HashMap<String,String>> instMiss= getLocMissingInstitutions();
-		System.out.println("Number of institutions: " + instMiss.size());
+		log.info("Institutions with no location: " + instMiss.size());
 		Iterator<String> insts = instMiss.keySet().iterator();
-		for(int i = 0; i < 20 && insts.hasNext(); i++){
+		List<Triple> newlocations = new ArrayList<Triple>();
+		for(int i = 0; (i < MAX_LOCATION_RESOLVE || MAX_LOCATION_RESOLVE == -1) && insts.hasNext(); i++){
 			String inst = insts.next();
-			System.out.println(inst);
-			// HashMap<String, String> institution = getInstitutionsProp(inst);
 			HashMap<String, String> institution = instMiss.get(inst);
-
-			for(String key: institution.keySet())
-				System.out.println("Prop: " + key + " Value: " + institution.get(key));
 			HashMap<String, String> loc = Location.queryLocation(institution);
 			inst = TripleStore.getInstance().cutOffNamespace(inst);
 			if(loc != null){
-				addTriple(inst, "loc_lat", loc.get("loc_lat"), true);
-		    	addTriple(inst, "loc_lng", loc.get("loc_lng"), true);
-				loc.forEach((k,v) -> System.out.println(k + "->"+ v));
+				newlocations.add(new StringLiteralTriple(inst, toEntity("loc_lat"), loc.get("loc_lat")));
+				newlocations.add(new StringLiteralTriple(inst, toEntity("loc_lng"), loc.get("loc_lng")));
 			}
+		}
+
+		if(!newlocations.isEmpty()){
+			addTriples(newlocations);
+			log.info("NomPC: " + Location.solvNPC + " GmaPC: " + Location.solvGPC + " Nom: " + Location.solvN + " Gma: " + Location.solvG);
+		}else{
+			log.info("No new location");
 		}
 	}
 
@@ -496,8 +496,10 @@ public class TripleStore {
 		if (predicate.contains(":") && !predicate.contains("://")) {
 			String[] parts = predicate.split(":");
 			p = f.createIRI(getNamespace(parts[0]), parts[1]);
-		} else {
+		} else if(!predicate.contains("://")){
 			p = f.createIRI(DEFAULT_NS, predicate);
+		}else{
+			p = f.createIRI(predicate);
 		}
 		Statement stmt;
 		if (isLiteral) {
@@ -588,4 +590,5 @@ public class TripleStore {
 				return s.replace(ns.getName(), "");
 		return s;
 	}
+
 }

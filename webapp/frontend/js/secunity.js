@@ -101,8 +101,8 @@ function getInstitute(inst, done, fail) {
 }
 
 /* List institutes */
-function getInstitutes(limit, offset, done, fail) {
-  $.getJSON( apiInstitutes + '?limit='+limit+'&offset='+offset )
+function getInstitutes(limit, offset, wlocfirst, done, fail) {
+  $.getJSON( apiInstitutes + '?limit='+limit+'&offset='+offset + (wlocfirst ? "&wlocfirst=wlocfirst":"") )
     .done(function( data ) {
     	if (done)
     		done(data);

@@ -30,6 +30,8 @@ dependencies {
   	compile 'org.openrdf.sesame:sesame-repository-api:4.1.1'
 	compile 'org.openrdf.sesame:sesame-rio-rdfxml:4.1.1'
 
+	providedCompile 'org.apache.tomcat:tomcat-catalina:8.0.32'
+
 	compile 'org.json:json:20090211'
 
 
