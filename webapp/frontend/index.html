@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="css/secunity.css">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
     <script type="text/javascript" src="js/dialog-polyfill.js"></script>
     <script type="text/javascript" src="js/underscore-min.js"></script>
     
@@ -167,13 +168,24 @@
                         <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
                     </div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="inststreetnum" name="su:address_street">
+                        <label class="mdl-textfield__label" for="inststreetnum">Street+Number</label>
+                    </div>
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_city">
                         <label class="mdl-textfield__label" for="instCounty">City</label>
+                    </div>
+                    <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" id="instPostcode" name="su:address_postcode">
+                        <label class="mdl-textfield__label" for="instPostcode">Postal code</label>
                     </div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_country">
                         <label class="mdl-textfield__label" for="instCounty">Country</label>
                     </div>
+
+                    
+                    <div id="map" class="partial-map"></div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instWeb" name="akts:has-web-address">
                         <label class="mdl-textfield__label" for="instWeb">Website</label>
@@ -206,6 +218,22 @@
    <script src="js/material.min.js"></script>
    <script src="js/material.components.ext.min.js"></script>
     <script>
+        var geocoder = new google.maps.Geocoder();
+        var mapObject = null;
+
+        function initializeMap(){
+          var center = new google.maps.LatLng(47.5, 19.05);
+          var myOptions = {
+          zoom : 5,
+          center : center,
+          mapTypeId : google.maps.MapTypeId.ROADMAP,
+          minZoom: 2
+        };
+        // Draw the map
+        mapObject = new google.maps.Map(document.getElementById("map"), myOptions);
+        }
+
+
         var dialog = document.querySelector('#modal_add_inst');
         var showDialogButton = document.querySelector('#show-dialog');
         if (! dialog.showModal) {
@@ -213,6 +241,7 @@
         }
         showDialogButton.addEventListener('click', function() {
           dialog.showModal();
+          initializeMap();
         });
         dialog.querySelector('.close').addEventListener('click', function() {
           dialog.close();

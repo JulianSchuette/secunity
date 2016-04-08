@@ -113,7 +113,7 @@ function initialize() {
 }
 
 function queryInstitutions(){
-     getInstitutes(100, 0, true, function(data) {
+     getInstitutes(200, 0, true, function(data) {
         $.each(data.entity, function(k, v) {
           // Assert location for each institution
           getInstitute(v, function(inst) {
