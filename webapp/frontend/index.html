@@ -168,23 +168,33 @@
                         <label class="mdl-textfield__label" for="instSuperInst">Sub-Organization of ...</label>
                     </div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="inststreetnum" name="su:address_street">
+                        <input class="mdl-textfield__input" type="text" id="inststreetnum" name="su:address_street" onblur="checkAddressIf()">
                         <label class="mdl-textfield__label" for="inststreetnum">Street+Number</label>
                     </div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_city">
+                        <input class="mdl-textfield__input" type="text" id="instCity" name="su:address_city" onblur="checkAddressIf()">
                         <label class="mdl-textfield__label" for="instCounty">City</label>
                     </div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instPostcode" name="su:address_postcode">
+                        <input class="mdl-textfield__input" type="text" id="instPostcode" name="su:address_postcode" onblur="checkAddressIf()">
                         <label class="mdl-textfield__label" for="instPostcode">Postal code</label>
                     </div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_country">
+                        <input class="mdl-textfield__input" type="text" id="instCountry" name="su:address_country" onblur="checkAddressIf()">
                         <label class="mdl-textfield__label" for="instCounty">Country</label>
                     </div>
+                        <input type="hidden" id="instlat" name="su:loc_lat">
+                        <input type="hidden" id="instlng" name="su:loc_lng">
+                    <!-- Button group to detect address and location from browser location data and to check an entered address by placing a marker-->
+                    <div class="secu-con-gr">
+                        <div class="secu-div-left">
+                          <button id="locateButton" class="mdl-button mdl-button--raised mdl-button--primary" type="button" onclick="locate()"><i class="material-icons left">place</i>Current location</button>
+                        </div>
+                        <div class="secu-div-right">
+                          <button class="mdl-button mdl-button--raised" type="button" id ="checkButton" onclick="verifyLocation()"><i class="material-icons left">done</i>Verify address</button>
+                        </div>
+                    </div>
 
-                    
                     <div id="map" class="partial-map"></div>
                     <div class="mdl-textfield mdl-textfield--full-width mdl-js-textfield">
                         <input class="mdl-textfield__input" type="text" id="instWeb" name="akts:has-web-address">

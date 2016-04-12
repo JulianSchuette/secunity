@@ -82,15 +82,16 @@ function writeAddressName(latLng) {
           }
         });
       }
-function drawmarker(resultsMap, latlong, title) {
-  var marker = new google.maps.Marker({
-    map: resultsMap,
-    position: latlong,
-    title: title
-    });
-  markerClusterer.addMarker(marker, true);
-  markerClusterer.redraw();
-  }
+      
+      function drawmarker(resultsMap, latlong, title) {
+        var marker = new google.maps.Marker({
+          map: resultsMap,
+          position: latlong,
+          title: title
+          });
+        markerClusterer.addMarker(marker, true);
+        markerClusterer.redraw();
+        }
 function clearClusters(e) {
         e.preventDefault();
         e.stopPropagation();

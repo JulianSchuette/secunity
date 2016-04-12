@@ -12,3 +12,15 @@
 	width: 100%;
 	height: 300px;
 }
+.secu-con-gr{
+	margin: 1em;
+	overflow: hidden;
+}
+
+.secu-div-left{
+	float: left;
+}
+
+.secu-div-right{
+	float: right;
+}
