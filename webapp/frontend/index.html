@@ -268,7 +268,7 @@
        // Requests _itemsPerPage_ more institutes, beginning from offset _pageCount*itemsPerPage_ and adds them to the frontend
        function addMoreInstitutesToDom(pageCount, itemsPerPage) {
           /* get list of institutes and add to frontend */
-          getInstitutes(itemsPerPage, pageCount*itemsPerPage, function(data) {
+          getInstitutes(itemsPerPage, pageCount*itemsPerPage, false, function(data) {
                 $.each(data.entity, function(k, v) {
                   // create institute card in frontend
                   getInstitute(v, function(data) {
