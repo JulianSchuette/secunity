@@ -1,8 +1,6 @@
 package de.fhg.aisec.secunity.db;
 
 
-import info.aduna.iteration.Iterations;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +48,7 @@ import org.openrdf.sail.inferencer.fc.config.DirectTypeHierarchyInferencerConfig
 import org.openrdf.sail.memory.config.MemoryStoreConfig;
 
 import de.fhg.aisec.secunity.rest.Location;
+import info.aduna.iteration.Iterations;
 
 /**
  * Facade for triple store backend.
@@ -274,7 +273,7 @@ public class TripleStore {
 	    //Configure new repo
 		RepositoryConfig config = new RepositoryConfig();
 	    config.setID(repoID);
-
+	    
 	    // We make it a normal SAIL (Storage and Inference Layer) repo
 	    SailRepositoryConfig epConfig = new SailRepositoryConfig();
 

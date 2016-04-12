@@ -64,6 +64,8 @@ public class Institutions {
 				IRI subjIRI = (IRI) bs.getValue("s");
 				String institution = TripleStore.getInstance().getPrefix(subjIRI.getNamespace()) + ":" + subjIRI.getLocalName();
 				data.add(institution);
+			} else {
+				System.out.println("Unkown type " + bs.getValue("s"));
 			}
 		}
 

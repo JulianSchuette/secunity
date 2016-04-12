@@ -261,13 +261,14 @@
     <script type="text/javascript" src="js/secunity.js"></script>
     <script type="text/javascript" src="js/bounds.js"></script>
     <script>
-      var pageCount = -1;
 
-      $('.android-content').scroll( _.debounce(function() {
-       if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+20) {
-          pageCount++;
+       var pageCount = 0;  // Current page of institutes
+       var itemsPerPage = 50; // Number of institutes to load per request (page)
+
+       // Requests _itemsPerPage_ more institutes, beginning from offset _pageCount*itemsPerPage_ and adds them to the frontend
+       function addMoreInstitutesToDom(pageCount, itemsPerPage) {
           /* get list of institutes and add to frontend */
-          getInstitutes(50, pageCount*50, function(data) {
+          getInstitutes(itemsPerPage, pageCount*itemsPerPage, function(data) {
                 $.each(data.entity, function(k, v) {
                   // create institute card in frontend
                   getInstitute(v, function(data) {
@@ -299,7 +300,18 @@
                       });
                 });
           }); //end getInstitutes
-           
+      } // end addMoreInstitutesToDom
+
+      // When document is ready after loading, request a first set of institutes.
+      $( document ).ready(function() {
+        addMoreInstitutesToDom(pageCount, itemsPerPage);
+      });
+
+      //When user scrolls to bottom of page, load more institutes
+      $('.android-content').scroll( _.debounce(function() {
+       if($('.android-content').scrollTop() + $('.android-content').height() >= $(document).height()+20) {
+          pageCount++;
+          addMoreInstitutesToDom(pageCount, itemsPerPage);           
        }
       },200));
     </script>
