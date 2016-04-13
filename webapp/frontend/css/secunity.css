@@ -24,3 +24,11 @@
 .secu-div-right{
 	float: right;
 }
+
+.detailRow{
+	color: #999999;
+	font-size: 1em;
+}
+.titleRow{
+	color: #113388;
+}

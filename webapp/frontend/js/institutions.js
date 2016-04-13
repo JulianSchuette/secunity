@@ -1,5 +1,6 @@
 
 var geocoder = new google.maps.Geocoder();
+var infowindow = new google.maps.InfoWindow();
 var mapObject = null;
 var restURL = "http://"+window.location.hostname + ":8080/secunity-backend/api/";
 var nominatim = "http://nominatim.openstreetmap.org/search/";
@@ -83,15 +84,35 @@ function writeAddressName(latLng) {
         });
       }
       
-      function drawmarker(resultsMap, latlong, title) {
+      function drawmarker(resultsMap, latlong, inst) {
+        var title = decodeURIComponent(inst["su:has_full_name"]);
         var marker = new google.maps.Marker({
           map: resultsMap,
           position: latlong,
           title: title
           });
+        google.maps.event.addListener(marker, 'click', function() {
+          var details = formatInstituteDetails(inst);
+          
+          // getInstitute(v, function(inst) {
+          //   assertLocation(inst.entity[v])
+          // });
+
+          infowindow.setContent(details);
+          infowindow.open(resultsMap, this);
+        });
         markerClusterer.addMarker(marker, true);
         markerClusterer.redraw();
         }
+
+
+function getTitleDetailHTML(title, detail){
+  console.log(detail);
+  return "<div class='titleRow'>" + title +"</div>"
+                +"<div class='detailRow'>" +detail+ "</div>";
+
+}
+
 function clearClusters(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -114,7 +135,7 @@ function initialize() {
 }
 
 function queryInstitutions(){
-     getInstitutes(200, 0, true, function(data) {
+     getInstitutes(50, 0, true, function(data) {
         $.each(data.entity, function(k, v) {
           // Assert location for each institution
           getInstitute(v, function(inst) {
@@ -129,7 +150,7 @@ function assertLocation(institution){
     queryNtimGeocoding(institution, true);
   }else{
     var loc = new google.maps.LatLng(institution["su:loc_lat"], institution["su:loc_lng"]);
-    drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
+    drawmarker(mapObject, loc, institution);
   }
 }
 
@@ -138,7 +159,7 @@ function queryGmapsGeocoding(institution, retry_if_over_limit){
       if (status === google.maps.GeocoderStatus.OK) {
         postLocation(institution.key, results[0].geometry.location.lat(), results[0].geometry.location.lng());
         var loc = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
+        drawmarker(mapObject, loc, institution);
       } else if(status == google.maps.GeocoderStatus.OVER_QUERY_LIMIT){
             if(retry_if_over_limit){
               setTimeout(function(){
@@ -160,7 +181,7 @@ function queryNtimGeocoding(institution){
         var result = data[0];
         postLocation(institution.key, result.lat, result.lon)
         var loc = new google.maps.LatLng(result.lat, result.lon);
-        drawmarker(mapObject, loc, decodeURIComponent(institution["su:has_full_name"]));
+        drawmarker(mapObject, loc, institution);
       }else{
         queryGmapsGeocoding(institution);
       }
@@ -208,6 +229,54 @@ function postLocation(instName, lat, lng){
     return;
   $.put(restURL+"institution/"+instName, "{su:loc_lat='"+lat+"', su:loc_lng='" + lng + "'}", function(data,code){}, "application/json; charset=UTF-8");
   
+}
+
+function formatInstituteDetails(inst){
+  var details = "";
+  var prop = "";
+  prop = "su:has_full_name";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Name", decodeURIComponent(inst[prop]));
+  prop = "su:has_short_name";
+  if(inst.hasOwnProperty(prop) && inst[prop] && inst[prop] != inst["su:has_full_name"])
+    details += getTitleDetailHTML("Short", decodeURIComponent(inst[prop]));
+  prop = "akts:sub-unit-of-organization-unit";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Sub organisation of", decodeURIComponent(inst[prop]));
+  prop = "akts:has-web-address";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Website", decodeURIComponent(inst[prop]));
+  prop = "su:address_street";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Street and number", decodeURIComponent(inst[prop]));
+  prop = "su:address_city";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("City", decodeURIComponent(inst[prop]));
+  prop = "su:address_postcode";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Postal code", decodeURIComponent(inst[prop]));
+  prop = "su:address_country";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Country", decodeURIComponent(inst[prop]));
+  prop = "su:participated_in_project";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Participates in project", decodeURIComponent(inst[prop]));
+  prop = "su:has_title";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Title", decodeURIComponent(inst[prop]));
+  prop = "su:has_first_name";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("First name", decodeURIComponent(inst[prop]));
+  prop = "su:has_last_name";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Last name", decodeURIComponent(inst[prop]));
+  prop = "su:has_phone_number";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Phone number", decodeURIComponent(inst[prop]));
+  prop = "su:has_fax_number";
+  if(inst.hasOwnProperty(prop) && inst[prop])
+    details += getTitleDetailHTML("Fax", decodeURIComponent(inst[prop]));
+  return details;
 }
 
 
