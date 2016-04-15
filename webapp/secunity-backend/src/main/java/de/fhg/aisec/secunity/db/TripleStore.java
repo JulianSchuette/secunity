@@ -58,7 +58,9 @@ import info.aduna.iteration.Iterations;
  */
 public class TripleStore {
 	private static final Logger log = Logger.getLogger(TripleStore.class.getName());
-	public static final String DB_URL = "http://localhost:8081/openrdf-sesame";
+	
+	// docker"db" is the hostname of OpenRDF container, set by docker-compose.yml
+	public static final String DB_URL = "http://db:8080/openrdf-sesame";
 	public static final String DEFAULT_NS = "http://secunity/";
 	public static final String REPO_ID = "secunity";
 
